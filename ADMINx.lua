@@ -2521,7 +2521,7 @@ end)
 ---
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "ADMIN | Durian Hub", HidePremium = false, IntroText = "ADMIN | Tan Dz Library", SaveConfig = true, ConfigFolder = "ADMIN"})
+local Window = OrionLib:MakeWindow({Name = "ADMIN Durian Hub", HidePremium = false, IntroText = "ADMIN Tan Dz Library", SaveConfig = true, ConfigFolder = "ADMIN"})
 ----------Tab-----------------------
 local W = Window:MakeTab({
     Name = "Thông Tin",
