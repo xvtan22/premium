@@ -2787,7 +2787,7 @@ M:AddParagraph("Select Weapon","Please Select Weapon")
 local WeaponList = {"Melee","Sword","Fruit","Gun"}
 _G.SelectWeapon = "Melee"
 M:AddDropdown({
-    Name = "Chọn vũ khí",
+    Name = "WeaponList",
     Default = "",
     Options = WeaponList,
     Flag = "Select Weapon",
@@ -2842,7 +2842,7 @@ if World2 and World1 then
     })
 
     M:AddButton({
-        Name = "Tăng FPS",
+        Name = "Boots FPS",
         Callback = function()
             pcall(function()
                 game:GetService("Lighting").FantasySky:Destroy()
@@ -2931,7 +2931,7 @@ end
     
     
     M:AddButton({
-        Name = "nhập hết code",
+        Name = "Reedem All Code",
         Callback = function()
             function RedeemCode(value)
                 game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(value)
@@ -2943,13 +2943,13 @@ end
     })
 
     local Section = M:AddSection({
-        Name = "Tự động Farm Level"
+        Name = "Auto Farm Farm Level"
     })
 
 M:AddParagraph("Main Farm","")
 
 ToggleFarm = M:AddToggle({
-    Name = "Cày cấp",
+    Name = "LevelFarm",
     Default = false,
     Flag = "LevelFarm",
     Save = true,
@@ -2983,7 +2983,7 @@ end)
 
 
 M:AddToggle({
-    Name = "đến đảo kitsune",
+    Name = "KitsuneIslandTween",
     Default = false,
     Flag = "KitsuneIslandTween",
     Save = true,
@@ -3015,7 +3015,7 @@ spawn(function()
 end)
 
 M:AddToggle({
-    Name = "nhặt lửa",
+    Name = "AutoAzureAmber",
     Default = false,
     Flag = "AutoAzureAmber",
     Save = true,
@@ -3039,7 +3039,7 @@ end)
 
 
 M:AddToggle({
-    Name = "định vị đảo kitsune",
+    Name = "EspKitsune",
     Default = false,
     Flag = "EspKitsune",
     Save = true,
@@ -3090,7 +3090,7 @@ end
 M:AddParagraph("Sea Event","")
 
 M:AddToggle({
-    Name = "Đánh TerrorShark",
+    Name = "Defeat TerrorShark",
     Default = false,
     Flag = "Terrorshark",
     Save = true,
@@ -3101,7 +3101,7 @@ M:AddToggle({
 })
 
 M:AddToggle({
-    Name = "Đánh Shark",
+    Name = "Defeat Shark",
     Default = false,
     Flag = "Shark",
     Save = true,
@@ -3149,7 +3149,7 @@ spawn(function()
 end)
 
 M:AddToggle({
-    Name = "Đánh Piranha",
+    Name = "Defeat Piranha",
     Default = false,
     Flag = "Piranha",
     Save = true,
@@ -3161,7 +3161,7 @@ M:AddToggle({
 
 
 M:AddToggle({
-    Name = "Đánh Fish Crew",
+    Name = "Defeat FishCrew",
     Default = false,
     Flag = "FishCrew",
     Save = true,
@@ -3290,7 +3290,7 @@ local Section = M:AddSection({
 M:AddParagraph("Mastery Menu","")
 
 M:AddToggle({
-    Name = "Cày Thông thạo Trái",
+    Name = "Auto Farm Fruit Mastery",
     Default = false,
     Flag = "Mastery",
     Save = true,
@@ -3304,7 +3304,7 @@ M:AddToggle({
 })
 
 M:AddToggle({
-    Name = "Cày Thông thạo Súng",
+    Name = "Auto Farm Gun Mastery",
     Default = false,
     Flag = "Gun Mastery",
     Save = true,
@@ -3315,7 +3315,7 @@ M:AddToggle({
 })
 
     M:AddSlider({
-        Name = "Máu",
+        Name = "Health",
         Min = 0,
         Max = 100,
         Default = 25,
@@ -3390,7 +3390,7 @@ M:AddToggle({
     })
 
 M:AddToggle({
-    Name = "gom quái",
+    Name = "Bring Mobs",
     Default = true,
     Flag = "Bring Mobs",
     Save = false,
@@ -3432,7 +3432,7 @@ local Section = M:AddSection({
 })
 
 M:AddToggle({
-    Name = "Đánh Nhanh",
+    Name = "FastAttack",
     Default = true,
     Flag = "FastAttack",
     Save = false,
@@ -3480,7 +3480,7 @@ local Section = M:AddSection({
 })
 
 M:AddToggle({
-    Name = "Di Chuyển = Reset",
+    Name = "Bypass TP",
     Default = false,
     Flag = "Bypass TP",
     Save = true,
@@ -3496,7 +3496,7 @@ local Section = M:AddSection({
 
 PosY = 30
 M:AddSlider({
-    Name = "Khoảng Cách",
+    Name = "Distance",
     Min = 0,
     Max = 65,
     Default = PosY,
@@ -3516,7 +3516,7 @@ local Section = M:AddSection({
 })
 
 Farmfasttoggle = M:AddToggle({
-    Name = "Cày Nhanh",
+    Name = "Farm Fast",
     Default = false,
     Flag = "Farm Fast",
     Save = true,
@@ -3532,7 +3532,7 @@ local Section = M:AddSection({
 
 
 M:AddToggle({
-    Name = "Cày 1-max",
+    Name = "Kaitun",
     Default = false,
     Flag = "Kaitun",
     Save = true,
@@ -3577,7 +3577,7 @@ end)
 
 if World1 then
     M:AddDropdown({
-        Name = "Chọn quái",
+        Name = "Select Monster",
         Default = "",
         Options = {"Bandit","Monkey","Gorilla","Pirate","Brute","Desert Bandit","Desert Officer","Snow Bandit","Snowman","Chief Petty Officer","Sky Bandit","Dark Master","Prisoner", "Dangerous Prisoner","Toga Warrior","Gladiator","Military Soldier","Military Spy","Fishman Warrior","Fishman Commando","God's Guard","Shanda","Royal Squad","Royal Soldier","Galley Pirate ","Galley Captain"},
         Callback = function(Value)
@@ -3588,7 +3588,7 @@ if World1 then
     
     if World2 then
     M:AddDropdown({
-        Name = "Chọn quái",
+        Name = "Select Monster",
         Default = "",
         Options = {"Raider","Mercenary","Swan Pirate","Factory Staff","Marine Lieutenant","Marine Captain","Zombie","Vampire","Snow Trooper","Winter Warrior","Lab Subordinate","Horned Warrior","Magma Ninja","Lava Pirate","Ship Deckhand","Ship Engineer","Ship Steward","Ship Officer","Arctic Warrior","Snow Lurker","Sea Soldier","Water Fighter"},
         Callback = function(Value)
@@ -3599,7 +3599,7 @@ if World1 then
     
     if World3 then
     M:AddDropdown({
-        Name = "Chọn quái",
+        Name = "Select Monster",
         Default = "",
         Options = {"Pirate Millionaire","Dragon Crew Warrior","Dragon Crew Archer","Female Islander","Giant Islander","Marine Commodore","Marine Rear Admiral","Fishman Raider","Fishman Captain","Forest Pirate","Mythological Pirate","Jungle Pirate","Musketeer Pirate","Reborn Skeleton","Living Zombie","Demonic Soul","Posessed Mummy", "Peanut Scout", "Peanut President", "Ice Cream Chef", "Ice Cream Commander", "Cookie Crafter", "Cake Guard", "Baking Staff", "Head Baker", "Cocoa Warrior", "Chocolate Bar Battler", "Sweet Thief", "Candy Rebel", "Candy Pirate", "Snow Demon"},
         Callback = function(Value)
@@ -3609,7 +3609,7 @@ if World1 then
     end
     
     M:AddToggle({
-        Name = "Cày quái",
+        Name = "Auto Farm Select Monster",
         Default = false,
         Callback = function(Value)
             _G.AutoFarmSelectMonster = Value
@@ -3621,9 +3621,9 @@ local Section = M:AddSection({
 })
 
 M:AddToggle({
-    Name = "đánh quái gần",
+    Name = "Auto Farm Nearest",
     Default = false,
-    Flag = "Tự động Farm Nearest",
+    Flag = "Auto Farm Nearest",
     Save = true,
     Callback = function(Value)
         _G.AutoFarmNearest = Value
@@ -3636,9 +3636,9 @@ M:AddToggle({
     })
 
 TweenChest = M:AddToggle({
-        Name = "Nhặt rương",
+        Name = "Auto Chest Farm",
         Default = false,
-        Flag = "Tự động Chest",
+        Flag = "Auto Chest Farm",
         Save = true,
         Callback = function(Value)
             AutoFarmChest = Value
@@ -3647,9 +3647,9 @@ TweenChest = M:AddToggle({
     })
 
     M:AddToggle({
-        Name = "Nhặt rương nhanh",
+        Name = "Auto Chest Farm Fast",
         Default = false,
-        Flag = "Tự động Chest[Bypass]",
+        Flag = "Auto Chest Farm[Bypass]",
         Save = true,
         Callback = function(Value)
             _G.ChestBypass = Value
@@ -3657,7 +3657,7 @@ TweenChest = M:AddToggle({
     })
 
 M:AddToggle({
-    Name = "dừng khi có cup hoặc key",
+    Name = "Stop Only Dark Key or God's Chalice",
     Default = false,
     Flag = "Stop Only Dark Key or God's Chalice",
     Save = true,
@@ -3692,9 +3692,9 @@ spawn(function()
 end)
 
 ToggleBone = M:AddToggle({
-    Name = "Cày xương",
+    Name = "Auto Farm Bone",
     Default = false,
-    Flag = "Tự động Farm Bone",
+    Flag = "Auto Farm Bone",
     Save = true,
     Callback = function(Value)
         _G.Auto_Bone = Value
@@ -3703,9 +3703,9 @@ ToggleBone = M:AddToggle({
 })
         
 ToggleRandom = M:AddToggle({
-        Name = "đổi xương",
+        Name = "Auto Random Bone",
         Default = false,
-        Flag = "Tự động Random Bone",
+        Flag = "Auto Random Bone",
         Save = true,
         Callback = function(Value)
             _G.Auto_Random_Bone = Value
