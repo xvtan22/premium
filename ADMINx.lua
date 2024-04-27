@@ -3437,6 +3437,9 @@ M:AddToggle({
     Flag = "FastAttack",
     Save = false,
     Callback = function(Value)
+        _G.FastAttack = Value
+    end    
+})
 local SuperFastMode = true -- Change to true if you want Super Super Super Fast attack (Like instant kill) but it will make the game kick you more than normal mode
 
 local plr = game.Players.LocalPlayer
