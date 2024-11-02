@@ -16,7 +16,7 @@ if gameId == 2753915549 or gameId == 4442272183 or gameId == 7449423635 then
     -- Blox Fruits
     print("Detectado Blox Fruits, executando script...")
     safeLoad("https://raw.githubusercontent.com/xvtan22/premium/refs/heads/main/MobileXmain.lua")
-elseif gameId == 10260193230 then
+elseif gameId == 2753915549 or gameId == 4442272183 or gameId == 7449423635 then
     -- Meme Sea
     print("Detectado Meme Sea, executando script...")
     safeLoad("https://raw.githubusercontent.com/xvtan22/premium/refs/heads/main/attackbuff.lua")
