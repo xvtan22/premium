@@ -2331,6 +2331,8 @@ local CbFw = debug.getupvalues(require(plr.PlayerScripts.CombatFramework))
 local CbFw2 = CbFw[2]
 
 function GetCurrentBlade() 
+   local SuperFastMode = true -- Change to true if you want Super Super Super Fast attack (Like instant kill) but it will make the game kick you more than normal mode
+
     local p13 = CbFw2.activeController
     local ret = p13.blades[1]
     if not ret then return end
