@@ -2325,8 +2325,7 @@ return 0
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
-------AttackNoCD  
-Setting:Toggle("Fast Attack [New]",true,function(value)
+------AttackNoCD 
  _G.FastAttack = value
 end)
 
