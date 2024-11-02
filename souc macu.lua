@@ -2338,7 +2338,7 @@ function GetCurrentBlade()
     return ret
 end
 
-function AttackNoCoolDown() 
+function AttackNoCD() 
     local AC = CbFw2.activeController
     for i = 1, 1 do 
         local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
