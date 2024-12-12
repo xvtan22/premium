@@ -178,7 +178,7 @@ Page.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Page.BackgroundTransparency = 1.10
 Page.Position = UDim2.new(0.405426834, 0, 0.075000003, 0)
 Page.Size = UDim2.new(0, 263, 0, 325)
-Page.Image = "http://www.roblox.com/asset/?id=9" .. tostring(0)
+Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(0)
 
 local MCNR = Instance.new("UICorner")
 MCNR.Name = "MCNR"
