@@ -1386,7 +1386,6 @@ L2.BorderSizePixel = 0
 L2.Position = UDim2.new(0.120833337, 0, 0.0952890813, 0)
 L2.Size = UDim2.new(0, 53.5, 0, 53.5)
 L2.BackgroundTransparency = 1.000
-L2.Image = "https://tr.rbxcdn.com/180DAY-e710598674fb872d660266af21b9ebd3/150/150/Decal/Webp/noFilter"
 L2.Draggable = true
 L2.MouseButton1Click:Connect(function()
   game:GetService("VirtualInputManager"):SendKeyEvent(true,305,false,game)
