@@ -2513,21 +2513,21 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Fie
 local Window = OrionLib:MakeWindow({Name = "Lap ", HidePremium = false, IntroText = "", SaveConfig = true, ConfigFolder = "Lap "})
 
 OrionLib:MakeNotification({
-	Name = "Lap ",
-	Content = "Choose Teams Bro?",
+	Name = "Dino Hub",
+	Content = "Me May Bel",
 	Image = "rbxassetid://4483345998",
 	Time = 7
 })
 
 OrionLib:MakeNotification({
-	Name = "Lap ",
-	Content = "Lap  Not Skidder, Please don't says",
+	Name = "Dino Hub",
+	Content = "crush candy trum skid",
 	Image = "rbxassetid://4483345998",
 	Time = 25
 })
 
 OrionLib:MakeNotification({
-    Name = "Lap ",
+    Name = "Dino Hub",
     Content = "Please Wait loading script...,Do not enable any function",
     Image = "rbxassetid://4483345998",
     Time = 5
@@ -2625,15 +2625,15 @@ local Section = W:AddSection({
 })
 
 
-W:AddLabel("Script By DK")
+W:AddLabel("Script By crush candy")
 
 local Section = W:AddSection({
     Name = "Update"
 })
 
-W:AddLabel("[+] Lap ")
-W:AddLabel("[+] Lap ")
-W:AddLabel("[+] Lap ")
+W:AddLabel("[+] nhin ")
+W:AddLabel("[+] dau ")
+W:AddLabel("[+] buoi ")
 
 local Section = W:AddSection({
     Name = "Status"
@@ -8345,13 +8345,13 @@ pcall(function()
         if _G.AutoEliteHunter then
             if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
                 OrionLib:MakeNotification({
-                    Name = "Lap (Noitification)",
+                    Name = "Dino Hub(Noitification)",
                     Content = "[EN] : Please cancel the farrm level quest (if any)",
                     Image = "rbxassetid://4483345998",
                     Time = 9
                 })
                 OrionLib:MakeNotification({
-                    Name = "Lap (Noitification)",
+                    Name = "Dino Hub(Noitification)",
                     Content = "[VN] : Làm ơn hủy nhiệm vụ farrm level(nếu có)",
                     Image = "rbxassetid://4483345998",
                     Time = 9
@@ -8520,7 +8520,7 @@ spawn(function()
             if _G.AutoObservation then
                 if game:GetService("Players").LocalPlayer.VisionRadius.Value >= 3000 then
                     OrionLib:MakeNotification({
-                        Name = "Lap  BOT",
+                        Name = "Dino Hub BOT",
                         Content = "!!You Are Max Point!!",
                         Image = "rbxassetid://14919714384",
                         Time = 5
@@ -8669,7 +8669,7 @@ spawn(function()
         if Mybeli <= 2500000 or MyFragment <= 5000 then
             wait(2.0)
             OrionLib:MakeNotification({
-                Name = "Lap ",
+                Name = "Dino Hub BOT",
                 Content = "You not have beli or fragment!",
                 Image = "rbxassetid://4483345998",
                 Time = 5
@@ -8830,7 +8830,7 @@ spawn(function()
                         end
                     else
                         OrionLib:MakeNotification({
-                            Name = "Lap  BOT",
+                            Name = "Dino Hub BOT",
                             Content = "Not Have Superhuman",
                             Image = "rbxassetid://14919714384",
                             Time = 5
@@ -8843,7 +8843,7 @@ spawn(function()
                         end
                     else
                         OrionLib:MakeNotification({
-                            Name = "Lap  BOT",
+                            Name = "Dino Hub BOT",
                             Content = "Not Have Death Step",
                             Image = "rbxassetid://14919714384",
                             Time = 5
@@ -8856,7 +8856,7 @@ spawn(function()
                         end
                     else
                         OrionLib:MakeNotification({
-                            Name = "Lap  BOT",
+                            Name = "Dino Hub BOT",
                             Content = "Not Have SharkMan Karate",
                             Image = "rbxassetid://14919714384",
                             Time = 5
@@ -8869,7 +8869,7 @@ spawn(function()
                         end
                     else
                         gOrionLib:MakeNotification({
-                            Name = "Lap  BOT",
+                            Name = "Dino Hub BOT",
                             Content = "Not Have Electric Claw",
                             Image = "rbxassetid://14919714384",
                             Time = 5
@@ -8880,7 +8880,7 @@ spawn(function()
                         if game.Players.LocalPlayer.Backpack:FindFirstChild("Dragon Talon") and game.Players.LocalPlayer.Backpack:FindFirstChild("Dragon Talon").Level.Value >= 400 or game.Players.LocalPlayer.Character:FindFirstChild("Dragon Talon") and game.Players.LocalPlayer.Character:FindFirstChild("Dragon Talon").Level.Value >= 400 then
                             if string.find(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman",true), "Bring") then
                                 OrionLib:MakeNotification({
-                                    Name = "Lap  BOT",
+                                    Name = "Dino Hub BOT",
                                     Content = "Not Have Enough Material",
                                     Image = "rbxassetid://14919714384",
                                     Time = 5
@@ -8892,7 +8892,7 @@ spawn(function()
                         end
                     else
                         OrionLib:MakeNotification({
-                            Name = "Lap  BOT",
+                            Name = "Dino Hub BOT",
                             Content = "You Not Have Dragon Talon! ",
                             Image = "rbxassetid://14919714384",
                             Time = 5
@@ -11291,7 +11291,7 @@ spawn(function()
             if game:GetService("Lighting").Sky.MoonTextureId=="http://www.roblox.com/asset/?id=9709149052" or game:GetService("Lighting").Sky.MoonTextureId=="http://www.roblox.com/asset/?id=9709149431" then
                 wait(2.0)
                 OrionLib:MakeNotification({
-                    Name = "Lap ",
+                    Name = "Dino Hub",
                     Content = "Turn Off Hop Find Moon Please",
                     Image = "rbxassetid://4483345998",
                     Time = 5
@@ -11299,7 +11299,7 @@ spawn(function()
             elseif game:GetService("Lighting").Sky.MoonTextureId=="http://www.roblox.com/asset/?id=9709143733" then
                 Hop()
                 OrionLib:MakeNotification({
-                    Name = "Lap ",
+                    Name = "Dino Hub",
                     Content = "Hop Server",
                     Image = "rbxassetid://4483345998",
                     Time = 5
@@ -11307,7 +11307,7 @@ spawn(function()
             elseif game:GetService("Lighting").Sky.MoonTextureId=="http://www.roblox.com/asset/?id=9709150401" then
                 Hop()
                 OrionLib:MakeNotification({
-                    Name = "Lap ",
+                    Name = "Dino Hub",
                     Content = "Hop Server",
                     Image = "rbxassetid://4483345998",
                     Time = 5
@@ -11315,7 +11315,7 @@ spawn(function()
             elseif game:GetService("Lighting").Sky.MoonTextureId=="http://www.roblox.com/asset/?id=9709149680" then
                 Hop()
                 OrionLib:MakeNotification({
-                    Name = "Lap ",
+                    Name = "Dino Hub",
                     Content = "Hop Server",
                     Image = "rbxassetid://4483345998",
                     Time = 5
@@ -11328,7 +11328,7 @@ spawn(function()
     end)
 
 OrionLib:MakeNotification({
-        Name = "Lap ",
+        Name = "Dino Hub",
         Content = "Loading script complete!, You can now enable the function!",
         Image = "rbxassetid://4483345998",
         Time = 5
@@ -11371,7 +11371,7 @@ end)
 OrionLib:Init()
 
 OrionLib:MakeNotification({
-    Name = "Lap  ",
+    Name = "Dino Hub",
     Content = "Loading Config Complete!!",
     Image = "rbxassetid://4483345998",
     Time = 5
