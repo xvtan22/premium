@@ -238,7 +238,7 @@ local Logo = Instance.new("ImageLabel")
 	Logo.BackgroundTransparency = 1
 	Logo.Position = UDim2.new(0, 10, 0, 10)
 	Logo.Size = UDim2.new(0, 120, 0, 120)
-	Logo.Image = "rbxassetid://0"]]--
+	Logo.Image = "rbxassetid://8"]]--
 local Tab = Instance.new("Frame")
 Tab.Name = "Tab"
 Tab.Parent = Main
@@ -1386,7 +1386,7 @@ L2.BorderSizePixel = 0
 L2.Position = UDim2.new(0.120833337, 0, 0.0952890813, 0)
 L2.Size = UDim2.new(0, 53.5, 0, 53.5)
 L2.BackgroundTransparency = 1.000
-L2.Image = "rbxassetid://92984205310992"
+L2.Image = "rbxassetid://12984205310992"
 L2.Draggable = true
 L2.MouseButton1Click:Connect(function()
   game:GetService("VirtualInputManager"):SendKeyEvent(true,305,false,game)
