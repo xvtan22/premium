@@ -12815,7 +12815,7 @@ local players = game:GetService("Players")
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "Dino Hub";
     Text = "Tải Hoàn Tất!";
-    Icon = "rbxthumb://type=Asset&id=92984205310992&w=150&h=150";
+    Icon = "rbxthumb://type=Asset&id=12984205310992&w=150&h=150";
     Duration = 10
 })
 
