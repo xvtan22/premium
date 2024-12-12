@@ -2510,7 +2510,7 @@ CamShake:Stop()
     end
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Fiend1sh/FiendMain/refs/heads/main/LapUi')))()
-local Window = OrionLib:MakeWindow({Name = "Lap ", HidePremium = false, IntroText = "", SaveConfig = true, ConfigFolder = "Lap "})
+local Window = OrionLib:MakeWindow({Name = "Dino Hub", HidePremium = false, IntroText = "", SaveConfig = true, ConfigFolder = "Dino Hub"})
 
 OrionLib:MakeNotification({
 	Name = "Dino Hub",
