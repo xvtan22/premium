@@ -15,7 +15,7 @@ local gameId = game.PlaceId
 if gameId == 2753915549 or gameId == 4442272183 or gameId == 7449423635 then
     -- Blox Fruits
     print("Detect Blox Fruits, exec script...")
-    safeLoad("loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/GameList.lua"))()")
+    safeLoad("loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Script-Games/main/Blox%20Fruit.lua"))()")
 elseif gameId == 16732694052 then
     -- Fisch
     print("Detect Fisch, exec script...")
