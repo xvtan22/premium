@@ -1,12 +1,12 @@
 -- GUI Discord
-local ScreenGui = Instance.new("ScreenGui")
+local ScreenGuiDiscord = Instance.new("ScreenGui")
 local TextLabel = Instance.new("TextLabel")
-local UIGradient = Instance.new("UIGradient")
+local UIGradientDiscord = Instance.new("UIGradient")
 
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGuiDiscord.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGuiDiscord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-TextLabel.Parent = ScreenGui
+TextLabel.Parent = ScreenGuiDiscord
 TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.BackgroundTransparency = 1.000
 TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -19,11 +19,11 @@ TextLabel.Text = "https://discord.gg/67tG8nmaQX"
 TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.TextSize = 20.00
 
-UIGradient.Color = ColorSequence.new{
+UIGradientDiscord.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(131, 181, 255)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(224, 162, 255))
 }
-UIGradient.Parent = TextLabel
+UIGradientDiscord.Parent = TextLabel
 
 -- GUI Main
 local ScreenGuiMain = Instance.new("ScreenGui")
@@ -131,16 +131,35 @@ local function getChestsSorted()
     return chests
 end
 
-local function TeleportToChest(chest)
+local function toggleNoclip(Toggle)
+    for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = not Toggle
+        end
+    end
+end
+
+local function Teleport(Goal, Speed)
     local RootPart = game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-    RootPart.CFrame = chest.CFrame
+    Speed = Speed or 300 -- Tốc độ mặc định
+    toggleNoclip(true)
+    local distance = (RootPart.Position - Goal.Position).Magnitude
+    while distance > 1 do
+        local direction = (Goal.Position - RootPart.Position).Unit
+        RootPart.CFrame = RootPart.CFrame + direction * (Speed * wait())
+        distance = (RootPart.Position - Goal.Position).Magnitude
+    end
+    toggleNoclip(false)
 end
 
 local function main()
     while wait() do
         local chests = getChestsSorted()
         if #chests > 0 then
-            TeleportToChest(chests[1])
+            Teleport(chests[1].CFrame)
+        else
+            -- Server Hop hoặc chờ khi không có chest
+            wait(5)
         end
     end
 end
