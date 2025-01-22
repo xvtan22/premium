@@ -614,9 +614,9 @@ end
 do
     local _25ms=Tabs.Home:AddButton({
         Title = "Copy Discord Invite",
-        Description = "discord.gg/bKfnyAXrHT, join for more leaks",
+        Description = "https://discord.gg/67tG8nmaQX, join fast or gei",
         Callback = function()
-            setclipboard("https://discord.gg/bKfnyAXrHT")
+            setclipboard("https://discord.gg/67tG8nmaQX")
         end
     })
     local section = Tabs.Home:AddSection("Change Log:")
