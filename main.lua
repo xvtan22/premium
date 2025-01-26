@@ -1204,10 +1204,10 @@ spawn(function()
     end
 end)
 
-local MaxSpeed = 350 -- Tốc độ tối đa (studs/giây)
+local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
 -- Biến trạng thái toggle
-_G.ToggleAutoCollect = false -- Mặc định là tắt
+_G.ToggleAutoCollect = true -- Mặc định là tắt
 
 local function getCharacter()
     local LocalPlayer = game:GetService("Players").LocalPlayer
