@@ -1207,7 +1207,7 @@ end)
 local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
 -- Biến trạng thái toggle
-_G.ToggleAutoCollect = true -- Mặc định là tắt
+_G.ToggleAutoCollect = false -- Mặc định là tắt
 
 local function getCharacter()
     local LocalPlayer = game:GetService("Players").LocalPlayer
@@ -1289,7 +1289,7 @@ local ToggleButton = Instance.new("TextButton", ToggleGui)
 ToggleButton.Size = UDim2.new(0, 200, 0, 50)
 ToggleButton.Position = UDim2.new(0.9, 0, 0.5, -25) -- Bên phải, giữa màn hình
 ToggleButton.AnchorPoint = Vector2.new(1, 0.5)
-ToggleButton.Text = "Auto Collect ON"
+ToggleButton.Text = "Auto Collect OFF"
 ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 
 ToggleButton.MouseButton1Click:Connect(function()
