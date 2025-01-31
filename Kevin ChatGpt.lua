@@ -259,111 +259,6 @@ local function tweenBoatToVector3(targetPos)
     leviathanGateConnection = Workspace:WaitForChild("Map").ChildAdded:Connect(stopIfMapObjectAppears)
 end
 
--- Hàm Tween thuyền đến player
-local function tweenBoatToPlayer(targetPlayer)
-    if playerTweening then
-        warn("Đang Tween đến player khác, hãy STOP trước.")
-        return
-    end
-    playerTweening = true
-
-    -- Nếu đang tween => dừng cũ
-    if currentTween then
-        stopTween("Dừng tween cũ.")
-    end
-
-    local boat, seat = getBoatVehicleSeat()
-    if not boat then
-        warn("Không tìm thấy thuyền đang ngồi!")
-        playerTweening = false
-        return
-    end
-    lastBoat, lastSeat = boat, seat
-
-    local primary = boat.PrimaryPart
-    if not primary then
-        warn("Thuyền không có PrimaryPart!")
-        playerTweening = false
-        return
-    end
-
-    -- Bật no clip
-    setBoatNoClip(boat, true)
-    if LocalPlayer.Character then
-        setPlayerNoClip(LocalPlayer.Character, true)
-    end
-
-    local char = targetPlayer.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then
-        warn("Player chưa load xong hoặc không có HRP!")
-        playerTweening = false
-        -- Tắt no clip
-        setBoatNoClip(boat, false)
-        if LocalPlayer.Character then
-            setPlayerNoClip(LocalPlayer.Character, false)
-        end
-        return
-    end
-
-    local playerPos = char.HumanoidRootPart.Position
-    local currentPos = primary.Position
-    local finalY = lockHeightMode and customY or currentPos.Y
-    if lockHeightMode then
-        primary.CFrame = CFrame.new(currentPos.X, finalY, currentPos.Z)
-    end
-
-    local distance = (Vector3.new(playerPos.X, finalY, playerPos.Z) - primary.Position).Magnitude
-    local tweenTime = distance / tweenSpeed
-
-    local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-    local goal = { CFrame = CFrame.new(playerPos.X, finalY, playerPos.Z) }
-
-    playerTweenInfo = TweenService:Create(primary, tweenInfo, goal)
-    playerTweenInfo:Play()
-
-    task.spawn(function()
-        while playerTweenInfo and playerTweenInfo.PlaybackState == Enum.PlaybackState.Playing do
-            checkLeaveBoat()
-            task.wait(0.1)
-        end
-        -- Tắt no clip
-        setBoatNoClip(boat, false)
-        if LocalPlayer.Character then
-            setPlayerNoClip(LocalPlayer.Character, false)
-        end
-        playerTweening = false
-    end)
-
-    if leviathanGateConnection then
-        leviathanGateConnection:Disconnect()
-    end
-    leviathanGateConnection = Workspace:WaitForChild("Map").ChildAdded:Connect(stopIfMapObjectAppears)
-end
-
--- Hàm Auto Return
-local function autoReturnCheck()
-    while autoReturnEnabled do
-        if lastBoat and lastSeat and lastBoat.Parent then
-            local char = LocalPlayer.Character
-            local hrp = char and char:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local seatPos = lastSeat.Position
-                local distance = (hrp.Position - seatPos).Magnitude
-                if distance > 10 then
-                    local speed = 300
-                    local time = distance / speed
-
-                    local info = TweenInfo.new(time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-                    local goal = { CFrame = CFrame.new(seatPos + Vector3.new(0,3,0)) }
-                    local tween = TweenService:Create(hrp, info, goal)
-                    tween:Play()
-                end
-            end
-        end
-        task.wait(1)
-    end
-end
-
 -- Hàm Kill Aura
 local function killAuraLoop()
     local monstersFolder = Workspace:FindFirstChild("Enemies")
@@ -375,4 +270,26 @@ local function killAuraLoop()
         if not hrp or not monstersFolder then continue end
 
         for _, monster in pairs(monstersFolder:GetChildren()) do
-            local hum
+            local hum = monster:FindFirstChild("Humanoid")
+            if hum and (hum.Health > 0) then
+                local distance = (hrp.Position - monster.HumanoidRootPart.Position).Magnitude
+                if distance <= killAuraRange then
+                    hum.Health = 0
+                end
+            end
+        end
+    end
+end
+
+-- Khởi tạo Auto Return và Kill Aura
+task.spawn(function()
+    while true do
+        if autoReturnEnabled then
+            autoReturnCheck()
+        end
+        if killAuraEnabled then
+            killAuraLoop()
+        end
+        task.wait(1)
+    end
+end)
