@@ -43,20 +43,20 @@ OtherTab:AddToggle("WalkSpeed", {
     Description = "Bật/Tắt WalkSpeed",
 })
 
--- Tạo toggle button ngoài màn hình để bật/tắt cửa sổ chính
+-- Tạo ScreenGui để chứa nút toggle
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Tạo nút bên ngoài để đóng/mở cửa sổ Fluent
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0, 100, 0, 50)  -- Kích thước của nút
 ToggleButton.Position = UDim2.new(0, 10, 0.5, -25)  -- Đặt vị trí ở góc giữa bên trái màn hình
 ToggleButton.Text = "Dino"  -- Đổi tên thành Dino
-ToggleButton.Parent = game.CoreGui  -- Đặt nút vào CoreGui
+ToggleButton.Parent = ScreenGui  -- Đặt nút vào ScreenGui
 
--- Xử lý sự kiện khi nhấn nút toggle để bật/tắt cửa sổ chính
+-- Xử lý sự kiện khi nhấn nút toggle để bật/tắt cửa sổ Fluent
 ToggleButton.MouseButton1Click:Connect(function()
-    if Window.Visible then
-        Window:Hide()  -- Ẩn cửa sổ GUI khi nhấn nút
-    else
-        Window:Show()  -- Hiển thị cửa sổ GUI khi nhấn nút
-    end
+    Window:Toggle()  -- Đóng/mở cửa sổ GUI khi nhấn nút
 end)
 
 -- Đảm bảo các thành phần đã được vẽ
