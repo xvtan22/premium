@@ -15,18 +15,110 @@ local Window = Library:CreateWindow{
 -- Tạo các tab
 local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Player", Icon = "" })
-local IslandTab = Window:AddTab({ Title = "Đảo 🏝️", Icon = "" })
 local OtherTab = Window:AddTab({ Title = "Khác", Icon = "" })
-local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" }) -- Tab Fruit mới
+
+-- Biến tốc độ và trạng thái toggle
+local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+_G.ToggleAutoCollect = false -- Mặc định tắt
+
+-- Lấy character của LocalPlayer
+local function getCharacter()
+    local LocalPlayer = game:GetService("Players").LocalPlayer
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
+    end
+    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    return LocalPlayer.Character
+end
+
+-- Sắp xếp danh sách Object theo khoảng cách
+table.sort = function(list, comparator)
+    local len = #list
+    for i = 1, len - 1 do
+        for j = i + 1, len do
+            if comparator(list[j], list[i]) then
+                list[i], list[j] = list[j], list[i]
+            end
+        end
+    end
+end
+
+local function DistanceFromPlrSort(ObjectList)
+    local RootPart = getCharacter().HumanoidRootPart
+    table.sort(ObjectList, function(ChestA, ChestB)
+        local RootPos = RootPart.Position
+        local DistanceA = (RootPos - ChestA.Position).Magnitude
+        local DistanceB = (RootPos - ChestB.Position).Magnitude
+        return DistanceA < DistanceB
+    end)
+end
+
+local UncheckedChests = {}
+local FirstRun = true
+
+local function getChestsSorted()
+    if FirstRun then
+        FirstRun = false
+        local Objects = game:GetDescendants()
+        for _, Object in pairs(Objects) do
+            if Object.Name:find("Chest") and Object:IsA("BasePart") then
+                table.insert(UncheckedChests, Object)
+            end
+        end
+    end
+
+    local Chests = {}
+    for _, Chest in pairs(UncheckedChests) do
+        if Chest:FindFirstChild("TouchInterest") then
+            table.insert(Chests, Chest)
+        end
+    end
+    DistanceFromPlrSort(Chests)
+    return Chests
+end
+
+local function toggleNoclip(Toggle)
+    for _, v in pairs(getCharacter():GetChildren()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = not Toggle
+        end
+    end
+end
+
+local function Teleport(Goal, Speed)
+    Speed = Speed or MaxSpeed
+    toggleNoclip(true)
+    local RootPart = getCharacter().HumanoidRootPart
+    while (RootPart.Position - Goal.Position).Magnitude > 1 do
+        local Direction = (Goal.Position - RootPart.Position).Unit
+        RootPart.CFrame = CFrame.new(RootPart.Position + Direction * (Speed * task.wait()))
+    end
+    toggleNoclip(false)
+end
+
+local function main()
+    task.spawn(function()
+        while task.wait() do
+            if _G.ToggleAutoCollect then
+                local Chests = getChestsSorted()
+                if #Chests > 0 then
+                    Teleport(Chests[1], MaxSpeed)
+                end
+            end
+        end
+    end)
+end
 
 -- Tab Main
 MainTab:AddToggle("LevithanToggle", {
-    Title = "Tìm Levithan và 🌋",
-    Description = "Bật/Tắt tìm Levithan và 🌋",
-})
-MainTab:AddInput("Speed", {
-    Title = "Tốc độ",
-    Description = "Nhập tốc độ tween",
+    Title = "Auto collect chest",
+    Description = "Bật/Tắt Auto collect chest",
+    Callback = function(Value)
+        _G.ToggleAutoCollect = Value
+        if Value then
+            main()
+        end
+    end
 })
 
 -- Tab Player
@@ -39,17 +131,6 @@ PlayerTab:AddButton({
     Description = "Làm mới danh sách người chơi",
 })
 
--- Tab Island
-IslandTab:AddDropdown("Chọn đảo", {
-    Title = "Chọn đảo",
-    Description = "Danh sách đảo",
-    Values = {"Tiki", "Hydra", "Pháo đài", "Dinh Thự", "Lâu Đài Bóng Tối", "Cảng", "Cây Đại Thụ", "Đảo Bánh"},
-})
-IslandTab:AddButton({
-    Title = "Tween: OFF",
-    Description = "Bật/Tắt tween đến đảo",
-})
-
 -- Tab Other
 OtherTab:AddToggle("Anti Die", {
     Title = "Anti Die",
@@ -58,10 +139,4 @@ OtherTab:AddToggle("Anti Die", {
 OtherTab:AddToggle("WalkSpeed", {
     Title = "WalkSpeed",
     Description = "Bật/Tắt WalkSpeed",
-})
-
--- Tab Fruit
-FruitTab:AddToggle("Find Fruit", {
-    Title = "Find Fruit",
-    Description = "Tự động nhặt Fruit + Esp fruit",
 })
