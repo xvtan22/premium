@@ -17,6 +17,12 @@ local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Player", Icon = "" })
 local OtherTab = Window:AddTab({ Title = "Khác", Icon = "" })
 
+-- Tab Main
+MainTab:AddToggle("LevithanToggle", {
+    Title = "Auto collect chest",
+    Description = "Bật/Tắt Auto collect chest"
+})
+
 -- Tab Player
 PlayerTab:AddDropdown("Chọn người chơi", {
     Title = "Chọn người chơi",
