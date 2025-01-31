@@ -1,12 +1,12 @@
 -- Tải Fluent UI Library
 local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
 
--- Tạo cửa sổ chính
+-- Tạo cửa sổ chính với kích thước vừa phải
 local Window = Library:CreateWindow{
-    Title = "Dino Hub",
-    SubTitle = "| gg/67tG8nmaQX",
+    Title = "Dino Hub",  -- Đặt tiêu đề cửa sổ
+    SubTitle = "| .gg/67tG8nmaQX",  -- Đặt phụ đề cửa sổ
     TabWidth = 160,
-    Size = UDim2.fromOffset(1280, 860),
+    Size = UDim2.fromOffset(800, 600),  -- Kích thước vừa phải
     Resize = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.RightControl -- Phím thu nhỏ
@@ -42,6 +42,18 @@ OtherTab:AddToggle("WalkSpeed", {
     Title = "WalkSpeed",
     Description = "Bật/Tắt WalkSpeed",
 })
+
+-- Tạo GUI Toggle bên ngoài để đóng/mở cửa sổ chính
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0, 100, 0, 50)  -- Kích thước của nút
+ToggleButton.Position = UDim2.new(0, 10, 0.5, -25)  -- Đặt vị trí ở góc giữa bên trái màn hình
+ToggleButton.Text = "Dino"  -- Đổi tên thành Dino
+ToggleButton.Parent = game.CoreGui  -- Đặt nút vào CoreGui
+
+-- Xử lý sự kiện khi nhấn nút toggle
+ToggleButton.MouseButton1Click:Connect(function()
+    Window:Toggle()  -- Đóng/mở cửa sổ chính khi nhấn nút
+end)
 
 -- Đảm bảo các thành phần đã được vẽ
 Window:Render()
