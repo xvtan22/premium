@@ -96,17 +96,15 @@ local function Teleport(Goal, Speed)
     toggleNoclip(false)
 end
 
+-- Hàm main() sẽ chạy liên tục khi bật Auto collect chest
 local function main()
-    task.spawn(function()
-        while task.wait() do
-            if _G.ToggleAutoCollect then
-                local Chests = getChestsSorted()
-                if #Chests > 0 then
-                    Teleport(Chests[1], MaxSpeed)
-                end
-            end
+    while _G.ToggleAutoCollect do
+        task.wait(1) -- Thời gian chờ giữa mỗi lần kiểm tra
+        local Chests = getChestsSorted()
+        if #Chests > 0 then
+            Teleport(Chests[1], MaxSpeed)  -- Teleport đến chest gần nhất
         end
-    end)
+    end
 end
 
 -- Tab Main
@@ -116,6 +114,7 @@ MainTab:AddToggle("LevithanToggle", {
     Callback = function(Value)
         _G.ToggleAutoCollect = Value
         if Value then
+            -- Bắt đầu thu thập ngay khi bật
             main()
         end
     end
