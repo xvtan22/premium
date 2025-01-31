@@ -56,7 +56,11 @@ ToggleButton.Parent = ScreenGui  -- Đặt nút vào ScreenGui
 
 -- Xử lý sự kiện khi nhấn nút toggle để bật/tắt cửa sổ Fluent
 ToggleButton.MouseButton1Click:Connect(function()
-    Window:Toggle()  -- Đóng/mở cửa sổ GUI khi nhấn nút
+    if Window.Visible then
+        Window:Hide()  -- Ẩn cửa sổ Fluent
+    else
+        Window:Show()  -- Hiển thị cửa sổ Fluent
+    end
 end)
 
 -- Đảm bảo các thành phần đã được vẽ
