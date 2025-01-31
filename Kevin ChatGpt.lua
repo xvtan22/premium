@@ -3,8 +3,8 @@ local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOog
 
 -- Tạo cửa sổ chính
 local Window = Library:CreateWindow{
-    Title = "#OlwenTh",
-    SubTitle = "@kevinproxlucky",
+    Title = "Dino Hub",
+    SubTitle = "| gg/67tG8nmaQX",
     TabWidth = 160,
     Size = UDim2.fromOffset(1280, 860),
     Resize = true,
