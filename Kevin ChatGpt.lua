@@ -15,7 +15,7 @@ screenGui.Parent = game.CoreGui
 
 local toggleButton = Instance.new("ImageButton")
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(1, -60, 0, 10)
+toggleButton.Position = UDim2.new(0, 10, 0.5, -25)
 toggleButton.Image = "rbxassetid://99430417788026"
 toggleButton.BackgroundTransparency = 1
 toggleButton.Parent = screenGui
