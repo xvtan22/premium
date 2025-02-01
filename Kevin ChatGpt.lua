@@ -14,8 +14,8 @@ screenGui.Name = "ControlGUI"
 screenGui.Parent = game.CoreGui
 
 local toggleButton = Instance.new("ImageButton")
-toggleButton.Size = UDim2.new(0, 50, 0, 50) 
-toggleButton.Position = UDim2.new(1, -60, 0, 10)
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0.5, -25)
 toggleButton.Image = "rbxassetid://99430417788026"
 toggleButton.BackgroundTransparency = 1
 toggleButton.Parent = screenGui
@@ -47,7 +47,7 @@ MainTab:AddToggle("AutochestToggle", {
 
         -- Biến trạng thái toggle
         _G.ToggleAutoCollect = false -- Mặc định là tắt
-        
+
         local function getCharacter()
             local LocalPlayer = game:GetService("Players").LocalPlayer
             if not LocalPlayer.Character then
@@ -56,7 +56,7 @@ MainTab:AddToggle("AutochestToggle", {
             LocalPlayer.Character:WaitForChild("HumanoidRootPart")
             return LocalPlayer.Character
         end
-        
+
         local function DistanceFromPlrSort(ObjectList)
             local RootPart = getCharacter().HumanoidRootPart
             table.sort(ObjectList, function(ChestA, ChestB)
@@ -66,10 +66,10 @@ MainTab:AddToggle("AutochestToggle", {
                 return DistanceA < DistanceB
             end)
         end
-        
+
         local UncheckedChests = {}
         local FirstRun = true
-        
+
         local function getChestsSorted()
             if FirstRun then
                 FirstRun = false
@@ -89,7 +89,7 @@ MainTab:AddToggle("AutochestToggle", {
             DistanceFromPlrSort(Chests)
             return Chests
         end
-        
+
         local function toggleNoclip(Toggle)
             for _, v in pairs(getCharacter():GetChildren()) do
                 if v:IsA("BasePart") then
@@ -97,7 +97,7 @@ MainTab:AddToggle("AutochestToggle", {
                 end
             end
         end
-        
+
         local function Teleport(Goal, Speed)
             Speed = Speed or MaxSpeed
             toggleNoclip(true)
@@ -108,7 +108,7 @@ MainTab:AddToggle("AutochestToggle", {
             end
             toggleNoclip(false)
         end
-        
+
         local function main()
             while wait() do
                 if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
@@ -121,11 +121,19 @@ MainTab:AddToggle("AutochestToggle", {
                 end
             end
         end
+
+        -- Start the main function when toggle is on
+        if Value then
+            _G.ToggleAutoCollect = true
+            main()
+        else
+            _G.ToggleAutoCollect = false
+        end
     end
 })
 
 -- Tab Player
-PlayerTab:AimToggle("Aimcam", {
+PlayerTab:AddToggle("Aimcam", {
     Title = "AimBot camera player",
     Description = "ON/OFF AimBot camera player",
     Callback = function(Value)
@@ -133,12 +141,12 @@ PlayerTab:AimToggle("Aimcam", {
         local RunService = game:GetService("RunService")
         local LocalPlayer = Players.LocalPlayer
         local Camera = game:GetService("Workspace").CurrentCamera
-        
+        local UserInputService = game:GetService("UserInputService")
+
         local isLockCamActive = false
         local lockCamConnection = nil
         local currentTargetPlayer = nil
-        
-        -- Tìm người chơi gần nhất
+
         local function findClosestPlayer()
             local closestPlayer = nil
             local shortestDistance = math.huge
@@ -153,8 +161,7 @@ PlayerTab:AimToggle("Aimcam", {
             end
             return closestPlayer
         end
-        
-        -- Khóa camera vào người chơi
+
         local function lockCameraToPlayer()
             lockCamConnection = RunService.RenderStepped:Connect(function()
                 if currentTargetPlayer and currentTargetPlayer.Character and currentTargetPlayer.Character:FindFirstChild("HumanoidRootPart") then
@@ -164,8 +171,7 @@ PlayerTab:AimToggle("Aimcam", {
                 end
             end)
         end
-        
-        -- Hủy khóa camera
+
         local function unlockCamera()
             if lockCamConnection then
                 lockCamConnection:Disconnect()
@@ -173,30 +179,76 @@ PlayerTab:AimToggle("Aimcam", {
                 currentTargetPlayer = nil
             end
         end
-        
-        -- Toggle khóa camera
+
         local function toggleLockCam()
             if isLockCamActive then
                 isLockCamActive = false
-                unlockCamera()  -- Dừng camera aim bot khi tắt toggle
+                unlockCamera()
             else
                 isLockCamActive = true
                 currentTargetPlayer = findClosestPlayer()
-                lockCameraToPlayer()  -- Bắt đầu camera aim bot khi bật toggle
+                lockCameraToPlayer()
             end
         end
-        
-        -- Khi toggle bật, sẽ bắt đầu hoặc dừng camera aim bot
-        if Value then
-            toggleLockCam()  -- Bắt đầu camera aim bot
-        else
-            toggleLockCam()  -- Dừng camera aim bot
+
+        UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if input.KeyCode == Enum.KeyCode.L and not gameProcessed then
+                toggleLockCam()
+            end
+        end)
+
+        -- Create ESP for players
+        local function updateESPText(player, espText)
+            local distance = math.floor((LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude)
+            espText.Text = player.Name .. " (" .. distance .. "m)"
         end
+
+        local function createESP(player)
+            local espFrame = Instance.new("BillboardGui")
+            espFrame.Parent = player.Character
+            espFrame.Size = UDim2.new(0, 200, 0, 50)
+            espFrame.Adornee = player.Character:WaitForChild("Head")
+            espFrame.StudsOffset = Vector3.new(0, 2, 0)
+            espFrame.AlwaysOnTop = true
+
+            local espText = Instance.new("TextLabel")
+            espText.Parent = espFrame
+            espText.Size = UDim2.new(1, 0, 1, 0)
+            espText.BackgroundTransparency = 1
+            espText.TextColor3 = Color3.new(1, 1, 1)
+            espText.TextSize = 20
+            espText.Font = Enum.Font.SourceSansBold
+            espText.TextStrokeTransparency = 0.8
+
+            RunService.RenderStepped:Connect(function()
+                updateESPText(player, espText)
+            end)
+        end
+
+        -- Handle existing players and new players joining
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                player.CharacterAdded:Connect(function()
+                    createESP(player)
+                end)
+                if player.Character then
+                    createESP(player)
+                end
+            end
+        end
+
+        Players.PlayerAdded:Connect(function(player)
+            if player ~= LocalPlayer then
+                player.CharacterAdded:Connect(function()
+                    createESP(player)
+                end)
+            end
+        end)
     end
 })
 
 -- Tab Đảo
-local islandDropdown = IslandTab:AddDropdown("Chọn đảo", {
+IslandTab:AddDropdown("Chọn đảo", {
     Title = "Chọn đảo",
     Description = "Danh sách đảo",
     Values = {"Tiki", "Hydra", "Pháo đài", "Dinh Thự", "Lâu Đài Bóng Tối", "Cảng", "Cây Đại Thụ", "Đảo Bánh"},
@@ -214,9 +266,9 @@ OtherTab:AddToggle("Anti Die", {
     end
 })
 
--- Tab Random Fruit
-FruitTab:AddToggle("Random Fruit", {
-    Title = "Random Fruit",
+-- Tab Fruit
+FruitTab:AddToggle("Find Fruit", {
+    Title = "Find Fruit",
     Description = "Tự động nhặt Fruit + Esp fruit",
     Callback = function(state)
         _G.Random_Auto = state
@@ -235,31 +287,17 @@ FruitTab:AddToggle("Random Fruit", {
     end
 })
 
--- Cài đặt thu nhỏ cửa sổ
+-- Minimize window logic
 local minimized = false
 local function toggleMinimize()
     minimized = not minimized
     if minimized then
         Window:SetSize(UDim2.fromOffset(160, 60)) -- Adjust for a smaller minimized size
-        Window:SetProperty("Acrylic", false)
-
-        -- Ẩn tất cả các tab
-        for _, tab in ipairs(Window:GetTabs()) do
-            tab:SetProperty("Visible", false)
-        end
-
-        Window.TitleBar:SetProperty("Visible", false)
-        Window.SubTitleLabel:SetProperty("Visible", false)
-
+        Window:SetVisible(false)
     else
         Window:SetSize(UDim2.fromOffset(580, 460)) -- Restore original size
-        Window:SetProperty("Acrylic", true)
-        for _, tab in ipairs(Window:GetTabs()) do
-            tab:SetProperty("Visible", true)
-        end
-
-        Window.TitleBar:SetProperty("Visible", true)
-        Window.SubTitleLabel:SetProperty("Visible", true)
+        Window:SetVisible(true)
     end
 end
+
 Window.MinimizeKeybind = toggleMinimize
