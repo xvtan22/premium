@@ -21,10 +21,8 @@ toggleButton.BackgroundTransparency = 1
 toggleButton.Parent = screenGui
 
 local isFluentVisible = true
-
 toggleButton.MouseButton1Click:Connect(function()
     isFluentVisible = not isFluentVisible
-
     if isFluentVisible then
         Window:Minimize(false)
     else
@@ -46,26 +44,114 @@ local Camera = game:GetService("Workspace").CurrentCamera
 local espObjects = {}
 local isAimBotActive = false
 local isESPActive = false
+local _G = _G or {}
 
--- Tab Player
+-- Auto Collect Chest
+local function collectChests()
+    local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+
+    -- Biến trạng thái toggle
+    _G.ToggleAutoCollect = false -- Mặc định là tắt
+    
+    local function getCharacter()
+        if not LocalPlayer.Character then
+            LocalPlayer.CharacterAdded:Wait()
+        end
+        LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+        return LocalPlayer.Character
+    end
+    
+    local function DistanceFromPlrSort(ObjectList)
+        local RootPart = getCharacter().HumanoidRootPart
+        table.sort(ObjectList, function(ChestA, ChestB)
+            local RootPos = RootPart.Position
+            local DistanceA = (RootPos - ChestA.Position).Magnitude
+            local DistanceB = (RootPos - ChestB.Position).Magnitude
+            return DistanceA < DistanceB
+        end)
+    end
+    
+    local UncheckedChests = {}
+    local FirstRun = true
+    
+    local function getChestsSorted()
+        if FirstRun then
+            FirstRun = false
+            local Objects = game:GetDescendants()
+            for _, Object in pairs(Objects) do
+                if Object.Name:find("Chest") and Object.ClassName == "Part" then
+                    table.insert(UncheckedChests, Object)
+                end
+            end
+        end
+        local Chests = {}
+        for _, Chest in pairs(UncheckedChests) do
+            if Chest:FindFirstChild("TouchInterest") then
+                table.insert(Chests, Chest)
+            end
+        end
+        DistanceFromPlrSort(Chests)
+        return Chests
+    end
+    
+    local function toggleNoclip(Toggle)
+        for _, v in pairs(getCharacter():GetChildren()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = not Toggle
+            end
+        end
+    end
+    
+    local function Teleport(Goal, Speed)
+        Speed = Speed or MaxSpeed
+        toggleNoclip(true)
+        local RootPart = getCharacter().HumanoidRootPart
+        while (RootPart.Position - Goal.Position).Magnitude > 1 do
+            local Direction = (Goal.Position - RootPart.Position).Unit
+            RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
+        end
+        toggleNoclip(false)
+    end
+    
+    local function main()
+        while wait() do
+            if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
+                local Chests = getChestsSorted()
+                if #Chests > 0 then
+                    Teleport(Chests[1].CFrame)
+                else
+                    -- Bạn có thể thêm logic serverhop ở đây
+                end
+            end
+        end
+    end
+
+    -- Chạy Auto Collect Chest
+    MainTab:AddToggle("AutoCollectChests", {
+        Title = "Auto collect chest",
+        Description = "ON/OFF auto collect chest",
+        Callback = function(Value)
+            _G.ToggleAutoCollect = Value
+            if Value then
+                main()
+            end
+        end
+    })
+end
+
+-- Tab Player: AimBot camera
 PlayerTab:AddToggle("AimBot", {
     Title = "AimBot camera player",
     Description = "ON/OFF AimBot camera player",
     Callback = function(Value)
         isAimBotActive = Value
-        
-        -- Kích hoạt hoặc vô hiệu hóa AimBot camera và ESP đồng thời
         if isAimBotActive then
             isESPActive = true
-            -- Bắt đầu AimBot Camera
             lockCameraToPlayer()
-            -- Bật ESP
             enableESP()
         else
             isESPActive = false
-            -- Dừng AimBot Camera
             unlockCamera()
-            -- Tắt ESP
             disableESP()
         end
     end
