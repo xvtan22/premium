@@ -34,9 +34,9 @@ end)
 
 local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Player", Icon = "" })
-local IslandTab = Window:AddTab({ Title = "Đảo 🏝️", Icon = "" })
-local OtherTab = Window:AddTab({ Title = "Khác", Icon = "" })
-local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
+local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" }) -- Chuyển lên đầu
+local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" }) -- Đổi tên thành Soon
+local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" }) -- Đổi tên thành Soon
 
 -- Tab Main
 MainTab:AddToggle("AutochestToggle", {
@@ -247,7 +247,7 @@ PlayerTab:AddToggle("Aimcam", {
     end
 })
 
--- Tab Đảo
+-- Tab Soon (Đảo)
 IslandTab:AddDropdown("Chọn đảo", {
     Title = "Chọn đảo",
     Description = "Danh sách đảo",
@@ -257,7 +257,7 @@ IslandTab:AddDropdown("Chọn đảo", {
     end
 })
 
--- Tab Khác
+-- Tab Soon (Khác)
 OtherTab:AddToggle("Anti Die", {
     Title = "Anti Die",
     Description = "Anti die chỉ có hiệu lực khi HP=30%",
@@ -266,38 +266,4 @@ OtherTab:AddToggle("Anti Die", {
     end
 })
 
--- Tab Fruit
-FruitTab:AddToggle("Find Fruit", {
-    Title = "Find Fruit",
-    Description = "Tự động nhặt Fruit + Esp fruit",
-    Callback = function(state)
-        _G.Random_Auto = state
-        if state then
-            task.spawn(function()
-                pcall(function()
-                    while _G.Random_Auto do
-                        wait(0.1)
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin", "Buy") -- Mua random fruit
-                    end
-                end)
-            end)
-        else
-            _G.Random_Auto = false -- Ensure to set _G.Random_Auto to false when disabling
-        end
-    end
-})
-
--- Minimize window logic
-local minimized = false
-local function toggleMinimize()
-    minimized = not minimized
-    if minimized then
-        Window:SetSize(UDim2.fromOffset(160, 60)) -- Adjust for a smaller minimized size
-        Window:SetVisible(false)
-    else
-        Window:SetSize(UDim2.fromOffset(580, 460)) -- Restore original size
-        Window:SetVisible(true)
-    end
-end
-
-Window.MinimizeKeybind = toggleMinimize
+-- Tab Fruit đã chuyển lên trên, không cần thay đổi
