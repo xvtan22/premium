@@ -33,7 +33,7 @@ toggleButton.MouseButton1Click:Connect(function()
 end)
 
 local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
-local PlayerTab = Window:AddTab({ Title = "Player", Icon = "" })
+local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
 local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })  -- Đổi vị trí tab Fruit lên trên
 local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" })  -- Đổi tên tab "Đảo" thành "Soon"
 local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })  -- Đổi tên tab "Khác" thành "Soon"
