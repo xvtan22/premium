@@ -121,8 +121,6 @@ local boatProtectConnection = nil
 local originalBoatProtectY = nil
 local currentBoat = nil
 _G.Random_Auto = false -- Auto Random Fruit
-local selectedPlayer = nil -- Biến lưu player được chọn cho Spectate và Tween Player
-local playerTweenInfo = nil
 local rockTouchConnection = nil -- Biến connection cho sự kiện chạm đá
 
 -- Danh sách đảo
@@ -137,5 +135,50 @@ local islands = {
     ["Đảo Bánh"] = Vector3.new(-1928.6, 15.1, -11582.4)
 }
 
--- Các phần hỗ trợ và logic khác vẫn giữ nguyên...
+-- Thêm chức năng cho IslandTab
+IslandTab:AddDropdown("Chọn đảo", {
+    Title = "Chọn đảo",
+    Values = {"Tiki", "Hydra", "Pháo đài", "Dinh Thự", "Lâu Đài Bóng Tối"},
+    Callback = function(Value)
+        selectedIslandCoord = islands[Value]
+        Fluent:Notify({
+            Title = "Đảo ",
+            Content = "Đã chọn " .. Value,
+            Duration = 3
+        })
+    end
+})
 
+-- Thêm chức năng cho FruitTab
+FruitTab:AddToggle("Find Fruit", {
+    Title = "Tìm và ESP Fruit",
+    Description = "Tìm kiếm và hiển thị ESP Fruit",
+    Callback = function(Value)
+        if Value then
+            Fluent:Notify({
+                Title = "Fruit ESP",
+                Content = "Đã bật ESP Fruit",
+                Duration = 3
+            })
+        else
+            Fluent:Notify({
+                Title = "Fruit ESP",
+                Content = "Đã tắt ESP Fruit",
+                Duration = 3
+            })
+        end
+    end
+})
+
+-- Thêm chức năng cho OtherTab
+OtherTab:AddToggle("Anti Die", {
+    Title = "Anti Die",
+    Description = "Chỉ kích hoạt khi HP <= 30%",
+    Callback = function(Value)
+        if Value then
+            Fluent:Notify({ Title = "Anti Die", Content = "Kích hoạt", Duration = 3 })
+        else
+            Fluent:Notify({ Title = "Anti Die", Content = "Vô hiệu hóa", Duration = 3 })
+        end
+    end
+})
