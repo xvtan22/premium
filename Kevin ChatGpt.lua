@@ -90,31 +90,9 @@ MainTab:AddToggle("AutochestToggle", {
             return Chests
         end
 
-        local function toggleNoclip(Toggle)
-            for _, v in pairs(getCharacter():GetChildren()) do
-                if v:IsA("BasePart") then
-                    v.CanCollide = not Toggle
-                end
-            end
-        end
-
-        local function smoothMoveTo(goal, speed)
+        local function teleportTo(goal)
             local RootPart = getCharacter().HumanoidRootPart
-            toggleNoclip(true)
-
-            local distance = (RootPart.Position - goal.Position).Magnitude
-            local moveStep = speed / 60 -- Tính bước di chuyển theo mỗi khung hình (FPS 60)
-
-            while distance > 1 and _G.ToggleAutoCollect do
-                local direction = (goal.Position - RootPart.Position).Unit
-                local newPosition = RootPart.Position + direction * math.min(moveStep, distance)
-                RootPart.CFrame = CFrame.new(newPosition, goal.Position)
-
-                distance = (RootPart.Position - goal.Position).Magnitude
-                task.wait() -- Giữ mượt mà theo khung hình
-            end
-
-            toggleNoclip(false)
+            RootPart.CFrame = goal.CFrame
         end
 
         local function main()
@@ -122,7 +100,7 @@ MainTab:AddToggle("AutochestToggle", {
                 if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
                     local Chests = getChestsSorted()
                     if #Chests > 0 then
-                        smoothMoveTo(Chests[1].CFrame, MaxSpeed)
+                        teleportTo(Chests[1])
                     else
                         -- Bạn có thể thêm logic serverhop ở đây
                     end
