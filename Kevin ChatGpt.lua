@@ -43,10 +43,9 @@ MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
     Description = "ON/OFF auto collect chest",
     Callback = function(Value)
-       local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+        local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
-        -- Biến trạng thái toggle
-        _G.ToggleAutoCollect = false -- Mặc định là tắt
+        _G.ToggleAutoCollect = Value
 
         local function getCharacter()
             local LocalPlayer = game:GetService("Players").LocalPlayer
@@ -90,34 +89,36 @@ MainTab:AddToggle("AutochestToggle", {
             return Chests
         end
 
+        local function noclip()
+            local character = getCharacter()
+            for _, v in pairs(character:GetDescendants()) do
+                if v:IsA("BasePart") and v.CanCollide then
+                    v.CanCollide = false
+                end
+            end
+        end
+
         local function teleportTo(goal)
             local RootPart = getCharacter().HumanoidRootPart
             RootPart.CFrame = goal.CFrame
         end
 
         local function main()
-            while wait() do
-                if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
-                    local Chests = getChestsSorted()
-                    if #Chests > 0 then
-                        teleportTo(Chests[1])
-                    else
-                        -- Bạn có thể thêm logic serverhop ở đây
-                    end
+            while _G.ToggleAutoCollect do
+                noclip() -- Bật noclip khi di chuyển
+                local Chests = getChestsSorted()
+                if #Chests > 0 then
+                    teleportTo(Chests[1])
                 end
+                task.wait(0.1) -- Giảm thời gian chờ để di chuyển nhanh hơn
             end
         end
 
-        -- Start the main function when toggle is on
         if Value then
-            _G.ToggleAutoCollect = true
-            main()
-        else
-            _G.ToggleAutoCollect = false
+            task.spawn(main)
         end
     end
 })
-
 
 -- Tab Player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
