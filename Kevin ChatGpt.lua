@@ -98,28 +98,22 @@ MainTab:AddToggle("AutochestToggle", {
             end
         end
 
-        -- Sửa lại hàm Teleport để di chuyển mượt mà hơn
-        local function Teleport(Goal, Speed)
-            Speed = Speed or MaxSpeed
-            toggleNoclip(true)
+        local function smoothMoveTo(goal, speed)
             local RootPart = getCharacter().HumanoidRootPart
-            local distance = (RootPart.Position - Goal.Position).Magnitude
-            
-            -- Sử dụng TweenService để di chuyển mượt mà
-            local TweenService = game:GetService("TweenService")
-            local tweenInfo = TweenInfo.new(distance / Speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, false)
-            local goalCFrame = CFrame.new(Goal.Position)
+            toggleNoclip(true)
 
-            local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = goalCFrame})
-            tween:Play()
+            local distance = (RootPart.Position - goal.Position).Magnitude
+            local moveStep = speed / 60 -- Tính bước di chuyển theo mỗi khung hình (FPS 60)
 
-            -- Đợi cho đến khi nhân vật đến gần rương (khoảng cách <= 1)
-            while (RootPart.Position - Goal.Position).Magnitude > 1 do
-                task.wait()  -- Đợi một chút để xử lý việc di chuyển
+            while distance > 1 and _G.ToggleAutoCollect do
+                local direction = (goal.Position - RootPart.Position).Unit
+                local newPosition = RootPart.Position + direction * math.min(moveStep, distance)
+                RootPart.CFrame = CFrame.new(newPosition, goal.Position)
+
+                distance = (RootPart.Position - goal.Position).Magnitude
+                task.wait() -- Giữ mượt mà theo khung hình
             end
 
-            -- Dừng lại và tắt noclip sau khi đến nơi
-            tween:Cancel()
             toggleNoclip(false)
         end
 
@@ -128,7 +122,7 @@ MainTab:AddToggle("AutochestToggle", {
                 if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
                     local Chests = getChestsSorted()
                     if #Chests > 0 then
-                        Teleport(Chests[1].CFrame)
+                        smoothMoveTo(Chests[1].CFrame, MaxSpeed)
                     else
                         -- Bạn có thể thêm logic serverhop ở đây
                     end
@@ -251,8 +245,8 @@ local function toggleAimbot(enabled)
 end
 
 PlayerTab:AddToggle("Aimcam", {
-    Title = "Aimbot camera player",
-    Description = "may be have bug",
+    Title = "Aimbot camera player (may be have bug)",
+    Description = "ON/OFF AimBot camera + esp",
     Callback = function(Value)
         toggleAimbot(Value)
     end
