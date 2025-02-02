@@ -43,9 +43,11 @@ MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
     Description = "ON/OFF auto collect chest",
     Callback = function(Value)
-        local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+       local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
-        _G.ToggleAutoCollect = Value
+        -- Biến trạng thái toggle
+        _G.ToggleAutoCollect = false -- Mặc định là tắt
+
         local function getCharacter()
             local LocalPlayer = game:GetService("Players").LocalPlayer
             if not LocalPlayer.Character then
@@ -65,38 +67,71 @@ MainTab:AddToggle("AutochestToggle", {
             end)
         end
 
+        local UncheckedChests = {}
+        local FirstRun = true
+
         local function getChestsSorted()
-            local Objects = game.Workspace:GetDescendants()
+            if FirstRun then
+                FirstRun = false
+                local Objects = game:GetDescendants()
+                for _, Object in pairs(Objects) do
+                    if Object.Name:find("Chest") and Object.ClassName == "Part" then
+                        table.insert(UncheckedChests, Object)
+                    end
+                end
+            end
             local Chests = {}
-            for _, Object in pairs(Objects) do
-                if Object.Name:find("Chest") and Object:IsA("BasePart") then
-                    table.insert(Chests, Object)
+            for _, Chest in pairs(UncheckedChests) do
+                if Chest:FindFirstChild("TouchInterest") then
+                    table.insert(Chests, Chest)
                 end
             end
             DistanceFromPlrSort(Chests)
             return Chests
         end
 
-        local function Teleport(Goal, Speed)
-            Speed = Speed or MaxSpeed
-            local RootPart = getCharacter().HumanoidRootPart
-            while (RootPart.Position - Goal.Position).Magnitude > 1 and _G.ToggleAutoCollect do
-                local Direction = (Goal.Position - RootPart.Position).Unit
-                RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
+        local function toggleNoclip(Toggle)
+            for _, v in pairs(getCharacter():GetChildren()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = not Toggle
+                end
             end
         end
 
-        task.spawn(function()
-            while _G.ToggleAutoCollect do
-                local Chests = getChestsSorted()
-                if #Chests > 0 then
-                    Teleport(Chests[1])
-                end
-                task.wait(0.5)
+        local function Teleport(Goal, Speed)
+            Speed = Speed or MaxSpeed
+            toggleNoclip(true)
+            local RootPart = getCharacter().HumanoidRootPart
+            while (RootPart.Position - Goal.Position).Magnitude > 1 do
+                local Direction = (Goal.Position - RootPart.Position).Unit
+                RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
             end
-        end)
+            toggleNoclip(false)
+        end
+
+        local function main()
+            while wait() do
+                if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
+                    local Chests = getChestsSorted()
+                    if #Chests > 0 then
+                        Teleport(Chests[1].CFrame)
+                    else
+                        -- Bạn có thể thêm logic serverhop ở đây
+                    end
+                end
+            end
+        end
+
+        -- Start the main function when toggle is on
+        if Value then
+            _G.ToggleAutoCollect = true
+            main()
+        else
+            _G.ToggleAutoCollect = false
+        end
     end
 })
+
 
 -- Tab Player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
