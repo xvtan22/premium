@@ -9,85 +9,134 @@ local Window = Library:CreateWindow{
     MinimizeKey = Enum.KeyCode.RightControl
 }
 
-local TweenService = game:GetService("TweenService")
-local PlayerService = game:GetService("Players")
-local LocalPlayer = PlayerService.LocalPlayer
-local RunService = game:GetService("RunService")
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ControlGUI"
+screenGui.Parent = game.CoreGui
 
-local function getCharacter()
-    if not LocalPlayer.Character then
-        LocalPlayer.CharacterAdded:Wait()
+local toggleButton = Instance.new("ImageButton")
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0.5, -25)
+toggleButton.Image = "rbxassetid://99430417788026"
+toggleButton.BackgroundTransparency = 1
+toggleButton.Parent = screenGui
+
+local isFluentVisible = true
+
+toggleButton.MouseButton1Click:Connect(function()
+    isFluentVisible = not isFluentVisible
+
+    if isFluentVisible then
+        Window:Minimize(false)
+    else
+        Window:Minimize(true)
     end
-    return LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character or nil
-end
+end)
 
-local function toggleNoclip(enabled)
-    local character = getCharacter()
-    if character then
-        for _, part in ipairs(character:GetChildren()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = not enabled
-            end
-        end
-    end
-end
+local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
+local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
+local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
+local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" })
+local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 
-local function teleportToPart(part)
-    local root = getCharacter() and getCharacter().HumanoidRootPart
-    if root and part then
-        toggleNoclip(true)
-        local tweenInfo = TweenInfo.new((root.Position - part.Position).Magnitude / 300, Enum.EasingStyle.Linear)
-        local goal = { CFrame = part.CFrame }
-        local tween = TweenService:Create(root, tweenInfo, goal)
-        tween:Play()
-        tween.Completed:Wait()
-        toggleNoclip(false)
-    end
-end
-
-local function getSortedChests()
-    local chests = {}
-    local root = getCharacter() and getCharacter().HumanoidRootPart
-    if root then
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if obj:IsA("Part") and obj.Name:find("Chest") and obj:FindFirstChild("TouchInterest") then
-                table.insert(chests, obj)
-            end
-        end
-        table.sort(chests, function(a, b)
-            return (root.Position - a.Position).Magnitude < (root.Position - b.Position).Magnitude
-        end)
-    end
-    return chests
-end
-
-local autoCollectActive = false
-
-local function autoCollectChest()
-    while autoCollectActive do
-        local chests = getSortedChests()
-        if #chests > 0 then
-            pcall(function()
-                teleportToPart(chests[1])
-            end)
-        end
-        task.wait(0.5)
-    end
-end
-
+-- Tab Main
 MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
     Description = "ON/OFF auto collect chest",
-    Callback = function(state)
-        autoCollectActive = state
-        if state then
-            task.spawn(autoCollectChest)
+    Callback = function(Value)
+       local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+
+        -- Biến trạng thái toggle
+        _G.ToggleAutoCollect = false -- Mặc định là tắt
+
+        local function getCharacter()
+            local LocalPlayer = game:GetService("Players").LocalPlayer
+            if not LocalPlayer.Character then
+                LocalPlayer.CharacterAdded:Wait()
+            end
+            LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+            return LocalPlayer.Character
+        end
+
+        local function DistanceFromPlrSort(ObjectList)
+            local RootPart = getCharacter().HumanoidRootPart
+            table.sort(ObjectList, function(ChestA, ChestB)
+                local RootPos = RootPart.Position
+                local DistanceA = (RootPos - ChestA.Position).Magnitude
+                local DistanceB = (RootPos - ChestB.Position).Magnitude
+                return DistanceA < DistanceB
+            end)
+        end
+
+        local UncheckedChests = {}
+        local FirstRun = true
+
+        local function getChestsSorted()
+            if FirstRun then
+                FirstRun = false
+                local Objects = game:GetDescendants()
+                for _, Object in pairs(Objects) do
+                    if Object.Name:find("Chest") and Object.ClassName == "Part" then
+                        table.insert(UncheckedChests, Object)
+                    end
+                end
+            end
+            local Chests = {}
+            for _, Chest in pairs(UncheckedChests) do
+                if Chest:FindFirstChild("TouchInterest") then
+                    table.insert(Chests, Chest)
+                end
+            end
+            DistanceFromPlrSort(Chests)
+            return Chests
+        end
+
+        local function toggleNoclip(Toggle)
+            for _, v in pairs(getCharacter():GetChildren()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = not Toggle
+                end
+            end
+        end
+
+        local function Teleport(Goal, Speed)
+            Speed = Speed or MaxSpeed
+            toggleNoclip(true)
+            local RootPart = getCharacter().HumanoidRootPart
+            while (RootPart.Position - Goal.Position).Magnitude > 1 do
+                local Direction = (Goal.Position - RootPart.Position).Unit
+                RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
+            end
+            toggleNoclip(false)
+        end
+
+        local function main()
+            while wait() do
+                if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
+                    local Chests = getChestsSorted()
+                    if #Chests > 0 then
+                        Teleport(Chests[1].CFrame)
+                    else
+                        -- Bạn có thể thêm logic serverhop ở đây
+                    end
+                end
+            end
+        end
+
+        -- Start the main function when toggle is on
+        if Value then
+            _G.ToggleAutoCollect = true
+            main()
+        else
+            _G.ToggleAutoCollect = false
         end
     end
 })
 
-local aimBotActive = false
-local espConnections = {}
+
+-- Tab Player
+local aimBotActive = false -- Trạng thái hoạt động của Aimbot
+local lockCamConnection = nil
+local espConnections = {} -- Danh sách kết nối ESP
 
 local function createESP(player)
     if not player.Character or not player.Character:FindFirstChild("Head") then return end
@@ -106,13 +155,14 @@ local function createESP(player)
     textLabel.TextScaled = true
     textLabel.Font = Enum.Font.SourceSansBold
 
-    local updateConnection = RunService.RenderStepped:Connect(function()
+    local updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
         if not aimBotActive or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
             billboardGui:Destroy()
             updateConnection:Disconnect()
             return
         end
-        local distance = math.floor((LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude)
+
+        local distance = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude)
         textLabel.Text = player.Name .. " (" .. distance .. "m)"
     end)
 
@@ -120,8 +170,8 @@ local function createESP(player)
 end
 
 local function applyESPToAllPlayers()
-    for _, player in ipairs(PlayerService:GetPlayers()) do
-        if player ~= LocalPlayer then
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer then
             player.CharacterAdded:Connect(function()
                 createESP(player)
             end)
@@ -131,7 +181,7 @@ local function applyESPToAllPlayers()
         end
     end
 
-    PlayerService.PlayerAdded:Connect(function(player)
+    game.Players.PlayerAdded:Connect(function(player)
         player.CharacterAdded:Connect(function()
             createESP(player)
         end)
@@ -149,20 +199,52 @@ local function toggleAimbot(enabled)
     if enabled then
         aimBotActive = true
         applyESPToAllPlayers()
+        lockCamConnection = game:GetService("RunService").RenderStepped:Connect(function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Camera = game:GetService("Workspace").CurrentCamera
+
+            local function getClosestTarget()
+                local closestPlayer = nil
+                local shortestDistance = math.huge
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                        if distance < shortestDistance then
+                            closestPlayer = player
+                            shortestDistance = distance
+                        end
+                    end
+                end
+                return closestPlayer
+            end
+
+            local targetPlayer = getClosestTarget()
+            if targetPlayer and targetPlayer.Character then
+                local targetPos = targetPlayer.Character.HumanoidRootPart.Position
+                local cameraPos = Camera.CFrame.Position
+                Camera.CFrame = CFrame.new(cameraPos, targetPos)
+            end
+        end)
     else
         aimBotActive = false
         clearESP()
+        if lockCamConnection then
+            lockCamConnection:Disconnect()
+            lockCamConnection = nil
+        end
     end
 end
 
 PlayerTab:AddToggle("Aimcam", {
     Title = "Aimbot camera player (may be have bug)",
     Description = "ON/OFF AimBot camera + esp",
-    Callback = function(state)
-        toggleAimbot(state)
+    Callback = function(Value)
+        toggleAimbot(Value)
     end
 })
 
+-- Tab Fruit
 FruitTab:AddToggle("Random Fruit", {
     Title = "Random Fruit",
     Description = "Auto Random Fruit",
@@ -170,13 +252,15 @@ FruitTab:AddToggle("Random Fruit", {
         _G.Random_Auto = state
         if state then
             task.spawn(function()
-                while _G.Random_Auto do
-                    pcall(function()
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin", "Buy")
-                    end)
-                    task.wait(0.1)
-                end
+                pcall(function()
+                    while _G.Random_Auto do
+                        task.wait(0.1)
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin", "Buy") -- Mua random fruit
+                    end
+                end)
             end)
+        else
+            _G.Random_Auto = false -- Đảm bảo _G.Random_Auto được gán là false khi tắt
         end
     end
 })
