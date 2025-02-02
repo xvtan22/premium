@@ -67,23 +67,12 @@ MainTab:AddToggle("AutochestToggle", {
             end)
         end
 
-        local UncheckedChests = {}
-        local FirstRun = true
-
         local function getChestsSorted()
-            if FirstRun then
-                FirstRun = false
-                local Objects = game:GetDescendants()
-                for _, Object in pairs(Objects) do
-                    if Object.Name:find("Chest") and Object.ClassName == "Part" then
-                        table.insert(UncheckedChests, Object)
-                    end
-                end
-            end
+            local Objects = game:GetDescendants()
             local Chests = {}
-            for _, Chest in pairs(UncheckedChests) do
-                if Chest:FindFirstChild("TouchInterest") then
-                    table.insert(Chests, Chest)
+            for _, Object in pairs(Objects) do
+                if Object.Name:find("Chest") and Object.ClassName == "Part" and Object:FindFirstChild("TouchInterest") then
+                    table.insert(Chests, Object)
                 end
             end
             DistanceFromPlrSort(Chests)
@@ -121,6 +110,8 @@ MainTab:AddToggle("AutochestToggle", {
                         resetCharacter() -- Reset sau khi nhặt đủ 7 rương
                         task.wait(1) -- Chờ nhân vật load lại
                     end
+                else
+                    task.wait(0.5) -- Không tìm thấy rương, chờ lâu hơn
                 end
                 task.wait(0.1) -- Giảm thời gian chờ để di chuyển nhanh hơn
             end
