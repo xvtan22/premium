@@ -24,7 +24,6 @@ local isFluentVisible = true
 
 toggleButton.MouseButton1Click:Connect(function()
     isFluentVisible = not isFluentVisible
-
     if isFluentVisible then
         Window:Minimize(false)
     else
@@ -41,9 +40,9 @@ local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 -- Tab Main
 MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
-    Description = "ON/OFF auto collect chest",
+    Description = "báo owner nếu có bug",
     Callback = function(Value)
-       local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+        local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
         -- Biến trạng thái toggle
         _G.ToggleAutoCollect = false -- Mặc định là tắt
@@ -98,39 +97,23 @@ MainTab:AddToggle("AutochestToggle", {
             end
         end
 
-        -- Sửa lại hàm Teleport để di chuyển mượt mà hơn
         local function Teleport(Goal, Speed)
             Speed = Speed or MaxSpeed
             toggleNoclip(true)
             local RootPart = getCharacter().HumanoidRootPart
-            local distance = (RootPart.Position - Goal.Position).Magnitude
-            
-            -- Sử dụng TweenService để di chuyển mượt mà
-            local TweenService = game:GetService("TweenService")
-            local tweenInfo = TweenInfo.new(distance / Speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, false)
-            local goalCFrame = CFrame.new(Goal.Position)
-
-            local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = goalCFrame})
-            tween:Play()
-
-            -- Đợi cho đến khi nhân vật đến gần rương (khoảng cách <= 1)
             while (RootPart.Position - Goal.Position).Magnitude > 1 do
-                task.wait()  -- Đợi một chút để xử lý việc di chuyển
+                local Direction = (Goal.Position - RootPart.Position).Unit
+                RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
             end
-
-            -- Dừng lại và tắt noclip sau khi đến nơi
-            tween:Cancel()
             toggleNoclip(false)
         end
 
         local function main()
-            while wait() do
+            while wait(0.2) do -- Giảm tần suất kiểm tra
                 if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
                     local Chests = getChestsSorted()
                     if #Chests > 0 then
                         Teleport(Chests[1].CFrame)
-                    else
-                        -- Bạn có thể thêm logic serverhop ở đây
                     end
                 end
             end
@@ -146,8 +129,7 @@ MainTab:AddToggle("AutochestToggle", {
     end
 })
 
-
--- Tab Player
+-- Tab Player - Aimbot and ESP player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
 local lockCamConnection = nil
 local espConnections = {} -- Danh sách kết nối ESP
@@ -155,6 +137,7 @@ local espConnections = {} -- Danh sách kết nối ESP
 local function createESP(player)
     if not player.Character or not player.Character:FindFirstChild("Head") then return end
 
+    -- Tạo BillboardGui để hiển thị tên người chơi và khoảng cách
     local billboardGui = Instance.new("BillboardGui")
     billboardGui.Parent = player.Character.Head
     billboardGui.AlwaysOnTop = true
@@ -169,8 +152,10 @@ local function createESP(player)
     textLabel.TextScaled = true
     textLabel.Font = Enum.Font.SourceSansBold
 
-    local updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
-        if not aimBotActive or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+    -- Cập nhật khoảng cách và tên người chơi
+    local updateConnection
+    updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
+        if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
             billboardGui:Destroy()
             updateConnection:Disconnect()
             return
@@ -212,7 +197,6 @@ end
 local function toggleAimbot(enabled)
     if enabled then
         aimBotActive = true
-        applyESPToAllPlayers()
         lockCamConnection = game:GetService("RunService").RenderStepped:Connect(function()
             local Players = game:GetService("Players")
             local LocalPlayer = Players.LocalPlayer
@@ -240,21 +224,37 @@ local function toggleAimbot(enabled)
                 Camera.CFrame = CFrame.new(cameraPos, targetPos)
             end
         end)
+
+        -- Apply ESP to all players when aimbot is enabled
+        applyESPToAllPlayers()
     else
         aimBotActive = false
-        clearESP()
         if lockCamConnection then
             lockCamConnection:Disconnect()
             lockCamConnection = nil
         end
+        clearESP() -- Clear ESP when aimbot is disabled
     end
 end
 
 PlayerTab:AddToggle("Aimcam", {
     Title = "Aimbot camera player",
-    Description = "may be have bugs",
+    Description = "may be have bug",
     Callback = function(Value)
         toggleAimbot(Value)
+    end
+})
+
+-- Toggle ESP player
+PlayerTab:AddToggle("Esp player", {
+    Title = "Esp player",
+    Description = "Định vị player",
+    Callback = function(Value)
+        if Value then
+            applyESPToAllPlayers()  -- Bật ESP cho tất cả player khi toggle ESP
+        else
+            clearESP()  -- Tắt ESP khi không còn toggle ESP
+        end
     end
 })
 
