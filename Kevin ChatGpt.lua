@@ -40,7 +40,7 @@ local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 -- Tab Main
 MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
-    Description = "ON/OFF auto collect chest",
+    Description = "báo owner nếu có bug",
     Callback = function(Value)
         local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
