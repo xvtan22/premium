@@ -121,13 +121,14 @@ local function createESP(player)
     textLabel.Font = Enum.Font.SourceSansBold
 
     local updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local distance = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude)
-            textLabel.Text = player.Name .. " (" .. distance .. "m)"
-        else
+        if not aimBotActive or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
             billboardGui:Destroy()
             updateConnection:Disconnect()
+            return
         end
+
+        local distance = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude)
+        textLabel.Text = player.Name .. " (" .. distance .. "m)"
     end)
 
     table.insert(espConnections, updateConnection)
