@@ -98,14 +98,28 @@ MainTab:AddToggle("AutochestToggle", {
             end
         end
 
+        -- Sửa lại hàm Teleport để di chuyển mượt mà hơn
         local function Teleport(Goal, Speed)
             Speed = Speed or MaxSpeed
             toggleNoclip(true)
             local RootPart = getCharacter().HumanoidRootPart
+            local distance = (RootPart.Position - Goal.Position).Magnitude
+            
+            -- Sử dụng TweenService để di chuyển mượt mà
+            local TweenService = game:GetService("TweenService")
+            local tweenInfo = TweenInfo.new(distance / Speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, false)
+            local goalCFrame = CFrame.new(Goal.Position)
+
+            local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = goalCFrame})
+            tween:Play()
+
+            -- Đợi cho đến khi nhân vật đến gần rương (khoảng cách <= 1)
             while (RootPart.Position - Goal.Position).Magnitude > 1 do
-                local Direction = (Goal.Position - RootPart.Position).Unit
-                RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
+                task.wait()  -- Đợi một chút để xử lý việc di chuyển
             end
+
+            -- Dừng lại và tắt noclip sau khi đến nơi
+            tween:Cancel()
             toggleNoclip(false)
         end
 
