@@ -202,7 +202,7 @@ local function toggleAimbot(enabled)
 end
 
 PlayerTab:AddToggle("Aimcam", {
-    Title = "Aimbot camera player",
+    Title = "Aimbot camera player (may be have bug)",
     Description = "ON/OFF AimBot camera + esp",
     Callback = function(Value)
         toggleAimbot(Value)
