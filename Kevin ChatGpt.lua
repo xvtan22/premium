@@ -34,16 +34,16 @@ end)
 
 local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
-local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })  -- Đổi vị trí tab Fruit lên trên
-local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" })  -- Đổi tên tab "Đảo" thành "Soon"
-local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })  -- Đổi tên tab "Khác" thành "Soon"
+local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
+local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" })
+local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 
 -- Tab Main
 MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
     Description = "ON/OFF auto collect chest",
     Callback = function(Value)
-        local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+       local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
         -- Biến trạng thái toggle
         _G.ToggleAutoCollect = false -- Mặc định là tắt
@@ -98,14 +98,28 @@ MainTab:AddToggle("AutochestToggle", {
             end
         end
 
+        -- Sửa lại hàm Teleport để di chuyển mượt mà hơn
         local function Teleport(Goal, Speed)
             Speed = Speed or MaxSpeed
             toggleNoclip(true)
             local RootPart = getCharacter().HumanoidRootPart
+            local distance = (RootPart.Position - Goal.Position).Magnitude
+            
+            -- Sử dụng TweenService để di chuyển mượt mà
+            local TweenService = game:GetService("TweenService")
+            local tweenInfo = TweenInfo.new(distance / Speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, false)
+            local goalCFrame = CFrame.new(Goal.Position)
+
+            local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = goalCFrame})
+            tween:Play()
+
+            -- Đợi cho đến khi nhân vật đến gần rương (khoảng cách <= 1)
             while (RootPart.Position - Goal.Position).Magnitude > 1 do
-                local Direction = (Goal.Position - RootPart.Position).Unit
-                RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
+                task.wait()  -- Đợi một chút để xử lý việc di chuyển
             end
+
+            -- Dừng lại và tắt noclip sau khi đến nơi
+            tween:Cancel()
             toggleNoclip(false)
         end
 
@@ -132,12 +146,115 @@ MainTab:AddToggle("AutochestToggle", {
     end
 })
 
+
 -- Tab Player
+local aimBotActive = false -- Trạng thái hoạt động của Aimbot
+local lockCamConnection = nil
+local espConnections = {} -- Danh sách kết nối ESP
+
+local function createESP(player)
+    if not player.Character or not player.Character:FindFirstChild("Head") then return end
+
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Parent = player.Character.Head
+    billboardGui.AlwaysOnTop = true
+    billboardGui.Size = UDim2.new(0, 200, 0, 50)
+    billboardGui.StudsOffset = Vector3.new(0, 3, 0)
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Parent = billboardGui
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = Color3.new(1, 1, 1)
+    textLabel.TextScaled = true
+    textLabel.Font = Enum.Font.SourceSansBold
+
+    local updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
+        if not aimBotActive or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+            billboardGui:Destroy()
+            updateConnection:Disconnect()
+            return
+        end
+
+        local distance = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude)
+        textLabel.Text = player.Name .. " (" .. distance .. "m)"
+    end)
+
+    table.insert(espConnections, updateConnection)
+end
+
+local function applyESPToAllPlayers()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer then
+            player.CharacterAdded:Connect(function()
+                createESP(player)
+            end)
+            if player.Character then
+                createESP(player)
+            end
+        end
+    end
+
+    game.Players.PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function()
+            createESP(player)
+        end)
+    end)
+end
+
+local function clearESP()
+    for _, connection in ipairs(espConnections) do
+        connection:Disconnect()
+    end
+    espConnections = {}
+end
+
+local function toggleAimbot(enabled)
+    if enabled then
+        aimBotActive = true
+        applyESPToAllPlayers()
+        lockCamConnection = game:GetService("RunService").RenderStepped:Connect(function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Camera = game:GetService("Workspace").CurrentCamera
+
+            local function getClosestTarget()
+                local closestPlayer = nil
+                local shortestDistance = math.huge
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                        if distance < shortestDistance then
+                            closestPlayer = player
+                            shortestDistance = distance
+                        end
+                    end
+                end
+                return closestPlayer
+            end
+
+            local targetPlayer = getClosestTarget()
+            if targetPlayer and targetPlayer.Character then
+                local targetPos = targetPlayer.Character.HumanoidRootPart.Position
+                local cameraPos = Camera.CFrame.Position
+                Camera.CFrame = CFrame.new(cameraPos, targetPos)
+            end
+        end)
+    else
+        aimBotActive = false
+        clearESP()
+        if lockCamConnection then
+            lockCamConnection:Disconnect()
+            lockCamConnection = nil
+        end
+    end
+end
+
 PlayerTab:AddToggle("Aimcam", {
-    Title = "AimBot camera player (SOON)",
-    Description = "ON/OFF AimBot camera player",
+    Title = "Aimbot camera player (may be have bug)",
+    Description = "ON/OFF AimBot camera + esp",
     Callback = function(Value)
-  --- dán code ở đây
+        toggleAimbot(Value)
     end
 })
 
@@ -151,7 +268,7 @@ FruitTab:AddToggle("Random Fruit", {
             task.spawn(function()
                 pcall(function()
                     while _G.Random_Auto do
-                        wait(0.1)
+                        task.wait(0.1)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin", "Buy") -- Mua random fruit
                     end
                 end)
@@ -161,18 +278,3 @@ FruitTab:AddToggle("Random Fruit", {
         end
     end
 })
-
--- Minimize window logic
-local minimized = false
-local function toggleMinimize()
-    minimized = not minimized
-    if minimized then
-        Window:SetSize(UDim2.fromOffset(160, 60)) -- Điều chỉnh kích thước nhỏ khi thu nhỏ
-        Window:SetVisible(false)
-    else
-        Window:SetSize(UDim2.fromOffset(580, 460)) -- Khôi phục kích thước ban đầu
-        Window:SetVisible(true)
-    end
-end
-
-Window.MinimizeKeybind = toggleMinimize
