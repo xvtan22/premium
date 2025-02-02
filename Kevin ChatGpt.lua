@@ -43,7 +43,7 @@ MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
     Description = "ON/OFF auto collect chest",
     Callback = function(Value)
-       local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+        local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
         -- Biến trạng thái toggle
         _G.ToggleAutoCollect = false -- Mặc định là tắt
@@ -132,8 +132,7 @@ MainTab:AddToggle("AutochestToggle", {
     end
 })
 
-
--- Tab Player
+-- Tab Player - Aimbot and ESP player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
 local lockCamConnection = nil
 local espConnections = {} -- Danh sách kết nối ESP
@@ -141,6 +140,7 @@ local espConnections = {} -- Danh sách kết nối ESP
 local function createESP(player)
     if not player.Character or not player.Character:FindFirstChild("Head") then return end
 
+    -- Tạo BillboardGui để hiển thị tên người chơi và khoảng cách
     local billboardGui = Instance.new("BillboardGui")
     billboardGui.Parent = player.Character.Head
     billboardGui.AlwaysOnTop = true
@@ -155,8 +155,9 @@ local function createESP(player)
     textLabel.TextScaled = true
     textLabel.Font = Enum.Font.SourceSansBold
 
+    -- Cập nhật khoảng cách và tên người chơi
     local updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
-        if not aimBotActive or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+        if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
             billboardGui:Destroy()
             updateConnection:Disconnect()
             return
@@ -198,7 +199,6 @@ end
 local function toggleAimbot(enabled)
     if enabled then
         aimBotActive = true
-        applyESPToAllPlayers()
         lockCamConnection = game:GetService("RunService").RenderStepped:Connect(function()
             local Players = game:GetService("Players")
             local LocalPlayer = Players.LocalPlayer
@@ -226,21 +226,37 @@ local function toggleAimbot(enabled)
                 Camera.CFrame = CFrame.new(cameraPos, targetPos)
             end
         end)
+
+        -- Apply ESP to all players when aimbot is enabled
+        applyESPToAllPlayers()
     else
         aimBotActive = false
-        clearESP()
         if lockCamConnection then
             lockCamConnection:Disconnect()
             lockCamConnection = nil
         end
+        clearESP() -- Clear ESP when aimbot is disabled
     end
 end
 
 PlayerTab:AddToggle("Aimcam", {
-    Title = "Aimbot camera player (may be have bug)",
-    Description = "ON/OFF AimBot camera + esp",
+    Title = "Aimbot camera player",
+    Description = "may be have bug",
     Callback = function(Value)
         toggleAimbot(Value)
+    end
+})
+
+-- Toggle ESP player
+PlayerTab:AddToggle("Esp player", {
+    Title = "Esp player",
+    Description = "Định vị player",
+    Callback = function(Value)
+        if Value then
+            applyESPToAllPlayers()  -- Bật ESP cho tất cả player khi toggle ESP
+        else
+            clearESP()  -- Tắt ESP khi không còn toggle ESP
+        end
     end
 })
 
