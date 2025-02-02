@@ -38,6 +38,66 @@ local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
 local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" })
 local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 
+-- Tab Main
+MainTab:AddToggle("AutochestToggle", {
+    Title = "Auto collect chest",
+    Description = "ON/OFF auto collect chest",
+    Callback = function(Value)
+        local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+
+        _G.ToggleAutoCollect = Value
+        local function getCharacter()
+            local LocalPlayer = game:GetService("Players").LocalPlayer
+            if not LocalPlayer.Character then
+                LocalPlayer.CharacterAdded:Wait()
+            end
+            LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+            return LocalPlayer.Character
+        end
+
+        local function DistanceFromPlrSort(ObjectList)
+            local RootPart = getCharacter().HumanoidRootPart
+            table.sort(ObjectList, function(ChestA, ChestB)
+                local RootPos = RootPart.Position
+                local DistanceA = (RootPos - ChestA.Position).Magnitude
+                local DistanceB = (RootPos - ChestB.Position).Magnitude
+                return DistanceA < DistanceB
+            end)
+        end
+
+        local function getChestsSorted()
+            local Objects = game.Workspace:GetDescendants()
+            local Chests = {}
+            for _, Object in pairs(Objects) do
+                if Object.Name:find("Chest") and Object:IsA("BasePart") then
+                    table.insert(Chests, Object)
+                end
+            end
+            DistanceFromPlrSort(Chests)
+            return Chests
+        end
+
+        local function Teleport(Goal, Speed)
+            Speed = Speed or MaxSpeed
+            local RootPart = getCharacter().HumanoidRootPart
+            while (RootPart.Position - Goal.Position).Magnitude > 1 and _G.ToggleAutoCollect do
+                local Direction = (Goal.Position - RootPart.Position).Unit
+                RootPart.CFrame = RootPart.CFrame + Direction * (Speed * task.wait())
+            end
+        end
+
+        task.spawn(function()
+            while _G.ToggleAutoCollect do
+                local Chests = getChestsSorted()
+                if #Chests > 0 then
+                    Teleport(Chests[1])
+                end
+                task.wait(0.5)
+            end
+        end)
+    end
+})
+
 -- Tab Player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
 local lockCamConnection = nil
@@ -145,5 +205,26 @@ PlayerTab:AddToggle("Aimcam", {
     Description = "ON/OFF AimBot camera",
     Callback = function(Value)
         toggleAimbot(Value)
+    end
+})
+
+-- Tab Fruit
+FruitTab:AddToggle("Random Fruit", {
+    Title = "Random Fruit",
+    Description = "Auto Random Fruit",
+    Callback = function(state)
+        _G.Random_Auto = state
+        if state then
+            task.spawn(function()
+                pcall(function()
+                    while _G.Random_Auto do
+                        task.wait(0.1)
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin", "Buy") -- Mua random fruit
+                    end
+                end)
+            end)
+        else
+            _G.Random_Auto = false -- Đảm bảo _G.Random_Auto được gán là false khi tắt
+        end
     end
 })
