@@ -46,7 +46,6 @@ MainTab:AddToggle("AutochestToggle", {
         local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
 
         _G.ToggleAutoCollect = Value
-        local chestCounter = 0
 
         local function getCharacter()
             local LocalPlayer = game:GetService("Players").LocalPlayer
@@ -93,23 +92,12 @@ MainTab:AddToggle("AutochestToggle", {
             RootPart.CFrame = goal.CFrame
         end
 
-        local function resetCharacter()
-            local player = game:GetService("Players").LocalPlayer
-            player:LoadCharacter() -- Reset nhân vật
-        end
-
         local function main()
             while _G.ToggleAutoCollect do
                 noclip() -- Bật noclip khi di chuyển
                 local Chests = getChestsSorted()
                 if #Chests > 0 then
                     teleportTo(Chests[1])
-                    chestCounter = chestCounter + 1
-                    if chestCounter >= 7 then
-                        chestCounter = 0
-                        resetCharacter() -- Reset sau khi nhặt đủ 7 rương
-                        task.wait(1) -- Chờ nhân vật load lại
-                    end
                 else
                     task.wait(0.5) -- Không tìm thấy rương, chờ lâu hơn
                 end
@@ -227,8 +215,8 @@ local function toggleAimbot(enabled)
 end
 
 PlayerTab:AddToggle("Aimcam", {
-    Title = "Aimbot camera player",
-    Description = "may be have bug",
+    Title = "Aimbot camera player (may be have bug)",
+    Description = "ON/OFF AimBot camera + esp",
     Callback = function(Value)
         toggleAimbot(Value)
     end
