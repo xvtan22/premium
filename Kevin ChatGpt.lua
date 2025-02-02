@@ -44,72 +44,75 @@ MainTab:AddToggle("AutochestToggle", {
     Description = "ON/OFF auto collect chest",
     Callback = function(Value)
         local MaxSpeed = 300 -- Tốc độ tối đa (studs/giây)
+_G.ToggleAutoCollect = false -- Bật Auto Collect mặc định
 
-        _G.ToggleAutoCollect = Value
+-- Tìm Character của người chơi
+local function getCharacter()
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
+    end
+    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    return LocalPlayer.Character
+end
 
-        local function getCharacter()
-            local LocalPlayer = game:GetService("Players").LocalPlayer
-            if not LocalPlayer.Character then
-                LocalPlayer.CharacterAdded:Wait()
-            end
-            LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-            return LocalPlayer.Character
-        end
+-- Hàm sắp xếp các đối tượng gần người chơi nhất
+local function DistanceFromPlrSort(ObjectList)
+    local RootPart = getCharacter().HumanoidRootPart
+    table.sort(ObjectList, function(ObjectA, ObjectB)
+        local RootPos = RootPart.Position
+        local DistanceA = (RootPos - ObjectA.Position).Magnitude
+        local DistanceB = (RootPos - ObjectB.Position).Magnitude
+        return DistanceA < DistanceB
+    end)
+end
 
-        local function DistanceFromPlrSort(ObjectList)
-            local RootPart = getCharacter().HumanoidRootPart
-            table.sort(ObjectList, function(ChestA, ChestB)
-                local RootPos = RootPart.Position
-                local DistanceA = (RootPos - ChestA.Position).Magnitude
-                local DistanceB = (RootPos - ChestB.Position).Magnitude
-                return DistanceA < DistanceB
-            end)
-        end
-
-        local function getChestsSorted()
-            local Objects = game:GetDescendants()
-            local Chests = {}
-            for _, Object in pairs(Objects) do
-                if Object.Name:find("Chest") and Object.ClassName == "Part" and Object:FindFirstChild("TouchInterest") then
-                    table.insert(Chests, Object)
-                end
-            end
-            DistanceFromPlrSort(Chests)
-            return Chests
-        end
-
-        local function noclip()
-            local character = getCharacter()
-            for _, v in pairs(character:GetDescendants()) do
-                if v:IsA("BasePart") and v.CanCollide then
-                    v.CanCollide = false
-                end
-            end
-        end
-
-        local function teleportTo(goal)
-            local RootPart = getCharacter().HumanoidRootPart
-            RootPart.CFrame = goal.CFrame
-        end
-
-        local function main()
-            while _G.ToggleAutoCollect do
-                noclip() -- Bật noclip khi di chuyển
-                local Chests = getChestsSorted()
-                if #Chests > 0 then
-                    teleportTo(Chests[1])
-                else
-                    task.wait(0.5) -- Không tìm thấy rương, chờ lâu hơn
-                end
-                task.wait(0.1) -- Giảm thời gian chờ để di chuyển nhanh hơn
-            end
-        end
-
-        if Value then
-            task.spawn(main)
+-- Hàm tìm Chest và sắp xếp theo khoảng cách
+local function getChestsSorted()
+    local Chests = {}
+    for _, Object in pairs(workspace:GetDescendants()) do
+        if Object.Name:find("Chest") and Object:IsA("Part") and Object:FindFirstChild("TouchInterest") then
+            table.insert(Chests, Object)
         end
     end
-})
+    DistanceFromPlrSort(Chests)
+    return Chests
+end
+
+-- Hàm tắt/mở noclip
+local function toggleNoclip(Toggle)
+    for _, v in pairs(getCharacter():GetChildren()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = not Toggle
+        end
+    end
+end
+
+-- Hàm di chuyển người chơi đến vị trí của Chest
+local function Teleport(Goal)
+    toggleNoclip(true)
+    local RootPart = getCharacter().HumanoidRootPart
+    while (RootPart.Position - Goal.Position).Magnitude > 1 do
+        local Direction = (Goal.Position - RootPart.Position).Unit
+        RootPart.CFrame = RootPart.CFrame + Direction * (MaxSpeed * task.wait())
+    end
+    toggleNoclip(false)
+end
+
+-- Hàm chính để tự động thu thập Chest
+local function main()
+    while task.wait() do
+        if _G.ToggleAutoCollect then
+            local Chests = getChestsSorted()
+            if #Chests > 0 then
+                -- Di chuyển đến Chest gần nhất
+                Teleport(Chests[1].CFrame)
+            end
+        end
+    end
+end
+
+-- Khởi chạy script tìm Chest tự động
+task.spawn(main)
 
 -- Tab Player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
