@@ -24,7 +24,6 @@ local isFluentVisible = true
 
 toggleButton.MouseButton1Click:Connect(function()
     isFluentVisible = not isFluentVisible
-
     if isFluentVisible then
         Window:Minimize(false)
     else
@@ -110,13 +109,11 @@ MainTab:AddToggle("AutochestToggle", {
         end
 
         local function main()
-            while wait() do
+            while wait(0.2) do -- Giảm tần suất kiểm tra
                 if _G.ToggleAutoCollect then -- Chỉ chạy nếu bật toggle
                     local Chests = getChestsSorted()
                     if #Chests > 0 then
                         Teleport(Chests[1].CFrame)
-                    else
-                        -- Bạn có thể thêm logic serverhop ở đây
                     end
                 end
             end
@@ -156,7 +153,8 @@ local function createESP(player)
     textLabel.Font = Enum.Font.SourceSansBold
 
     -- Cập nhật khoảng cách và tên người chơi
-    local updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
+    local updateConnection
+    updateConnection = game:GetService("RunService").RenderStepped:Connect(function()
         if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
             billboardGui:Destroy()
             updateConnection:Disconnect()
