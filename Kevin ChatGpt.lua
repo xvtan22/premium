@@ -408,16 +408,16 @@ OtherTab:AddToggle("manhinhden", {
                 screenGui.Name = guiName
                 screenGui.ResetOnSpawn = false  -- Quan trọng: Đảm bảo GUI không reset khi nhân vật reset
                 screenGui.Parent = game.CoreGui
-        
+
                 local frame = Instance.new("Frame")
-                frame.Size = UDim2.fromScale(1, 1)
-                frame.Position = UDim2.fromScale(0, 0)
+                frame.Size = UDim2.new(1, 0, 1, 0)  -- Điều chỉnh để che toàn bộ màn hình
+                frame.Position = UDim2.new(0, 0, 0, 0)  -- Vị trí frame ở góc trên bên trái
                 frame.BackgroundColor3 = color  -- Màu đen
                 frame.BorderSizePixel = 0
                 frame.Parent = screenGui
             end
         end
-        
+
         -- Hàm toggle
         local function toggleBlackScreen(state)
             local existingGui = game.CoreGui:FindFirstChild(guiName)
@@ -431,17 +431,17 @@ OtherTab:AddToggle("manhinhden", {
                 end
             end
         end
-        
+
         -- Giữ GUI khi nhân vật reset
         game.Players.LocalPlayer.CharacterAdded:Connect(function()
-            local existingGui = game.CoreGui:FindFirstChild(guiName)
-            if not existingGui then
-                -- Nếu GUI không tồn tại, tạo mới khi nhân vật respawn
-                toggleBlackScreen(true)
-            end
-        end)        
+            toggleBlackScreen(true)  -- Đảm bảo rằng black screen được bật khi respawn
+        end)
+
+        -- Apply black screen toggle
+        toggleBlackScreen(Value)
     end
 })
+
 
 OtherTab:AddToggle("manhinhtrang", {
     Title = "White screen",
@@ -459,22 +459,22 @@ OtherTab:AddToggle("manhinhtrang", {
                 screenGui.Name = guiName
                 screenGui.ResetOnSpawn = false  -- Quan trọng: Đảm bảo GUI không reset khi nhân vật reset
                 screenGui.Parent = game.CoreGui
-        
+
                 local frame = Instance.new("Frame")
-                frame.Size = UDim2.fromScale(1, 1)
-                frame.Position = UDim2.fromScale(0, 0)
-                frame.BackgroundColor3 = color
+                frame.Size = UDim2.new(1, 0, 1, 0)  -- Điều chỉnh để che toàn bộ màn hình
+                frame.Position = UDim2.new(0, 0, 0, 0)  -- Vị trí frame ở góc trên bên trái
+                frame.BackgroundColor3 = color  -- Màu trắng
                 frame.BorderSizePixel = 0
                 frame.Parent = screenGui
             end
         end
-        
+
         -- Hàm toggle
         local function toggleWhiteScreen(state)
             local existingGui = game.CoreGui:FindFirstChild(guiName)
             if state then
                 -- Bật màn hình màu trắng
-                createScreenGui(Color3.fromRGB(255, 255, 255))
+                createScreenGui(Color3.fromRGB(255, 255, 255))  -- Màu trắng
             else
                 -- Tắt GUI, trở về bình thường
                 if existingGui then
@@ -482,14 +482,13 @@ OtherTab:AddToggle("manhinhtrang", {
                 end
             end
         end
-        
+
         -- Giữ GUI khi nhân vật reset
         game.Players.LocalPlayer.CharacterAdded:Connect(function()
-            local existingGui = game.CoreGui:FindFirstChild(guiName)
-            if not existingGui then
-                -- Nếu GUI không tồn tại, tạo mới khi nhân vật respawn
-                toggleWhiteScreen(true)
-            end
-        end)        
+            toggleWhiteScreen(true)  -- Đảm bảo rằng white screen được bật khi respawn
+        end)
+
+        -- Apply white screen toggle
+        toggleWhiteScreen(Value)
     end
 })
