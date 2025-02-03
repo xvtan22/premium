@@ -279,6 +279,102 @@ FruitTab:AddToggle("Random Fruit", {
     end
 })
 
+local fruitsESP = {}
+local findFruitEnabled = false
+local function createESP(fruit)
+    if not fruit:FindFirstChild("Handle") then return end
+
+    if fruitsESP[fruit] then
+        fruitsESP[fruit]:Destroy()
+        fruitsESP[fruit] = nil
+    end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = fruit.Handle
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 2, 0)
+    billboard.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.Text = fruit.Name
+    label.TextColor3 = Color3.fromRGB(255, 255, 0)
+    label.TextScaled = true
+
+    billboard.Parent = fruit
+    fruitsESP[fruit] = billboard
+end
+
+local function findFruits()
+    local fruits = {}
+    for _, object in pairs(workspace:GetChildren()) do
+        if object:IsA("Tool") and object.Name:lower():find("fruit") then
+            table.insert(fruits, object)
+            if findFruitEnabled then
+                createESP(object)
+            end
+        end
+    end
+    return fruits
+end
+
+local function teleportToFruit(fruit)
+    if fruit and fruit:FindFirstChild("Handle") then
+        if findFruitEnabled then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = fruit.Handle.CFrame
+        end
+    end
+end
+
+local runService = game:GetService("RunService")
+runService.Heartbeat:Connect(function()
+    local fruits = findFruits()
+    if #fruits > 0 then
+        for _, fruit in pairs(fruits) do
+            if fruit.Parent == workspace then
+                teleportToFruit(fruit)
+                wait(1)
+            end
+        end
+    end
+end)
+
+workspace.ChildAdded:Connect(function(child)
+    if child:IsA("Tool") and child.Name:lower():find("fruit") then
+        wait(0.5)
+        if findFruitEnabled then
+            createESP(child)
+        end
+        teleportToFruit(child)
+    end
+end)
+
+workspace.ChildRemoved:Connect(function(child)
+    if fruitsESP[child] then
+        fruitsESP[child]:Destroy()
+        fruitsESP[child] = nil
+    end
+end)
+
+FruitTab:AddToggle("Find Fruit", {
+    Title = "Find Fruit",
+    Description = "test giùm t",
+    Callback = function(Value)
+        findFruitEnabled = Value
+        if not findFruitEnabled then
+            local fruits = findFruits()
+            for _, fruit in ipairs(fruits) do
+                if fruitsESP[fruit] then
+                    fruitsESP[fruit]:Destroy()
+                    fruitsESP[fruit] = nil
+                end
+            end
+        end
+    end
+})
+
+
 IslandTab:AddToggle("oneclick", {
     Title = "One Click (beta)",
     Description = "Note: oneclick cannot be disabled (will fix soon)",
