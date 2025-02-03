@@ -34,7 +34,7 @@ end)
 local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
 local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
-local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" })
+local IslandTab = Window:AddTab({ Title = "One Click", Icon = "" })
 local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 
 -- Tab Main
@@ -276,5 +276,13 @@ FruitTab:AddToggle("Random Fruit", {
         else
             _G.Random_Auto = false -- Đảm bảo _G.Random_Auto được gán là false khi tắt
         end
+    end
+})
+
+IslandTab:AddToggle("oneclick", {
+    Title = "One Click (beta)",
+    Description = "may be have bugs",
+    Callback = function(Value)
+    loadstring(game:HttpGet("https://api.realaya.xyz/v1/files/l/73mkp0aqyfo4ypy8hvl0nz10lq49fey5.lua"))()
     end
 })
