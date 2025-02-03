@@ -281,7 +281,7 @@ FruitTab:AddToggle("Random Fruit", {
 
 IslandTab:AddToggle("oneclick", {
     Title = "One Click (beta)",
-    Description = "may be have bugs",
+    Description = "Note: oneclick cannot be disabled",
     Callback = function(Value)
         if Value then
             getgenv().ConfigsKaitun = {
