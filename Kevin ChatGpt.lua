@@ -406,7 +406,7 @@ OtherTab:AddToggle("manhinhden", {
                 -- Tạo mới nếu chưa có
                 local screenGui = Instance.new("ScreenGui")
                 screenGui.Name = guiName
-                screenGui.ResetOnSpawn = false  -- Quan trọng: Đảm bảo GUI không reset khi nhân vật reset
+                -- Không đặt ResetOnSpawn = false, GUI sẽ bị xóa khi nhân vật respawn
                 screenGui.Parent = game.CoreGui
 
                 local frame = Instance.new("Frame")
@@ -414,6 +414,7 @@ OtherTab:AddToggle("manhinhden", {
                 frame.Position = UDim2.new(0, 0, 0, 0)  -- Vị trí frame ở góc trên bên trái
                 frame.BackgroundColor3 = color  -- Màu đen
                 frame.BorderSizePixel = 0
+                frame.ZIndex = 1  -- Đặt ZIndex thấp để không che Fluent window hoặc toggle
                 frame.Parent = screenGui
             end
         end
@@ -431,11 +432,6 @@ OtherTab:AddToggle("manhinhden", {
                 end
             end
         end
-
-        -- Giữ GUI khi nhân vật reset
-        game.Players.LocalPlayer.CharacterAdded:Connect(function()
-            toggleBlackScreen(true)  -- Đảm bảo rằng black screen được bật khi respawn
-        end)
 
         -- Apply black screen toggle
         toggleBlackScreen(Value)
@@ -457,7 +453,7 @@ OtherTab:AddToggle("manhinhtrang", {
                 -- Tạo mới nếu chưa có
                 local screenGui = Instance.new("ScreenGui")
                 screenGui.Name = guiName
-                screenGui.ResetOnSpawn = false  -- Quan trọng: Đảm bảo GUI không reset khi nhân vật reset
+                -- Không đặt ResetOnSpawn = false, GUI sẽ bị xóa khi nhân vật respawn
                 screenGui.Parent = game.CoreGui
 
                 local frame = Instance.new("Frame")
@@ -465,6 +461,7 @@ OtherTab:AddToggle("manhinhtrang", {
                 frame.Position = UDim2.new(0, 0, 0, 0)  -- Vị trí frame ở góc trên bên trái
                 frame.BackgroundColor3 = color  -- Màu trắng
                 frame.BorderSizePixel = 0
+                frame.ZIndex = 1  -- Đặt ZIndex thấp để không che Fluent window hoặc toggle
                 frame.Parent = screenGui
             end
         end
@@ -482,11 +479,6 @@ OtherTab:AddToggle("manhinhtrang", {
                 end
             end
         end
-
-        -- Giữ GUI khi nhân vật reset
-        game.Players.LocalPlayer.CharacterAdded:Connect(function()
-            toggleWhiteScreen(true)  -- Đảm bảo rằng white screen được bật khi respawn
-        end)
 
         -- Apply white screen toggle
         toggleWhiteScreen(Value)
