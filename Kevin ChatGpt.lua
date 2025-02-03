@@ -35,7 +35,7 @@ local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
 local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
 local IslandTab = Window:AddTab({ Title = "One Click", Icon = "" })
-local OtherTab = Window:AddTab({ Title = "Reduce lag", Icon = "" })
+local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 
 -- Tab Main
 MainTab:AddToggle("AutochestToggle", {
@@ -389,98 +389,5 @@ IslandTab:AddToggle("oneclick", {
                 task.cancelAll() -- Hủy toàn bộ task đang chạy (nếu khả dụng)
             end
         end 
-    end
-})
-
-OtherTab:AddToggle("manhinhden", {
-    Title = "Black screen",
-    Description = "Reduce lag",
-    Callback = function(Value)
-        local guiName = "FullScreenColorGui"
-
-        -- Hàm tạo GUI với màu sắc
-        local function createScreenGui(color)
-            -- Kiểm tra GUI có tồn tại không
-            local existingGui = game.CoreGui:FindFirstChild(guiName)
-            if not existingGui then
-                -- Tạo mới nếu chưa có
-                local screenGui = Instance.new("ScreenGui")
-                screenGui.Name = guiName
-                -- Không đặt ResetOnSpawn = false, GUI sẽ bị xóa khi nhân vật respawn
-                screenGui.Parent = game.CoreGui
-
-                local frame = Instance.new("Frame")
-                frame.Size = UDim2.new(1, 0, 1, 0)  -- Điều chỉnh để che toàn bộ màn hình
-                frame.Position = UDim2.new(0, 0, 0, 0)  -- Vị trí frame ở góc trên bên trái
-                frame.BackgroundColor3 = color  -- Màu đen
-                frame.BorderSizePixel = 0
-                frame.ZIndex = 1  -- Đặt ZIndex thấp để không che Fluent window hoặc toggle
-                frame.Parent = screenGui
-            end
-        end
-
-        -- Hàm toggle
-        local function toggleBlackScreen(state)
-            local existingGui = game.CoreGui:FindFirstChild(guiName)
-            if state then
-                -- Bật màn hình màu đen
-                createScreenGui(Color3.fromRGB(0, 0, 0))  -- Màu đen
-            else
-                -- Tắt GUI, trở về bình thường
-                if existingGui then
-                    existingGui:Destroy()
-                end
-            end
-        end
-
-        -- Apply black screen toggle
-        toggleBlackScreen(Value)
-    end
-})
-
-
-OtherTab:AddToggle("manhinhtrang", {
-    Title = "White screen",
-    Description = "Reduce lag",
-    Callback = function(Value)
-        local guiName = "FullScreenColorGui"
-
-        -- Hàm tạo GUI với màu sắc
-        local function createScreenGui(color)
-            -- Kiểm tra GUI có tồn tại không
-            local existingGui = game.CoreGui:FindFirstChild(guiName)
-            if not existingGui then
-                -- Tạo mới nếu chưa có
-                local screenGui = Instance.new("ScreenGui")
-                screenGui.Name = guiName
-                -- Không đặt ResetOnSpawn = false, GUI sẽ bị xóa khi nhân vật respawn
-                screenGui.Parent = game.CoreGui
-
-                local frame = Instance.new("Frame")
-                frame.Size = UDim2.new(1, 0, 1, 0)  -- Điều chỉnh để che toàn bộ màn hình
-                frame.Position = UDim2.new(0, 0, 0, 0)  -- Vị trí frame ở góc trên bên trái
-                frame.BackgroundColor3 = color  -- Màu trắng
-                frame.BorderSizePixel = 0
-                frame.ZIndex = 1  -- Đặt ZIndex thấp để không che Fluent window hoặc toggle
-                frame.Parent = screenGui
-            end
-        end
-
-        -- Hàm toggle
-        local function toggleWhiteScreen(state)
-            local existingGui = game.CoreGui:FindFirstChild(guiName)
-            if state then
-                -- Bật màn hình màu trắng
-                createScreenGui(Color3.fromRGB(255, 255, 255))  -- Màu trắng
-            else
-                -- Tắt GUI, trở về bình thường
-                if existingGui then
-                    existingGui:Destroy()
-                end
-            end
-        end
-
-        -- Apply white screen toggle
-        toggleWhiteScreen(Value)
     end
 })
