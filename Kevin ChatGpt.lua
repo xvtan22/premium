@@ -396,28 +396,50 @@ OtherTab:AddToggle("manhinhden", {
     Title = "Black screen",
     Description = "Reduce lag",
     Callback = function(Value)
-        local player = game.Players.LocalPlayer
-        local screenGui = Instance.new("ScreenGui")
-        
-        -- Đảm bảo GUI không bị xóa khi reset
-        screenGui.ResetOnSpawn = false  
-        screenGui.Name = "FullScreenBlackGui"
-        screenGui.Parent = game.CoreGui
-        
-        -- Tạo khung phủ kín toàn bộ màn hình
-        local blackFrame = Instance.new("Frame")
-        blackFrame.Size = UDim2.fromScale(1, 1)
-        blackFrame.Position = UDim2.fromScale(0, 0)
-        blackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Màu đen
-        blackFrame.BorderSizePixel = 0
-        blackFrame.Parent = screenGui
-        
-        -- Đảm bảo GUI vẫn tồn tại sau reset
-        player.CharacterAdded:Connect(function()
-            if not screenGui.Parent then
+        local guiName = "FullScreenColorGui"
+
+        -- Hàm tạo GUI với màu sắc
+        local function createScreenGui(color)
+            -- Kiểm tra GUI có tồn tại không
+            local existingGui = game.CoreGui:FindFirstChild(guiName)
+            if not existingGui then
+                -- Tạo mới nếu chưa có
+                local screenGui = Instance.new("ScreenGui")
+                screenGui.Name = guiName
+                screenGui.ResetOnSpawn = false  -- Quan trọng: Đảm bảo GUI không reset khi nhân vật reset
                 screenGui.Parent = game.CoreGui
+        
+                local frame = Instance.new("Frame")
+                frame.Size = UDim2.fromScale(1, 1)
+                frame.Position = UDim2.fromScale(0, 0)
+                frame.BackgroundColor3 = color  -- Màu đen
+                frame.BorderSizePixel = 0
+                frame.Parent = screenGui
             end
-        end)
+        end
+        
+        -- Hàm toggle
+        local function toggleBlackScreen(state)
+            local existingGui = game.CoreGui:FindFirstChild(guiName)
+            if state then
+                -- Bật màn hình màu đen
+                createScreenGui(Color3.fromRGB(0, 0, 0))  -- Màu đen
+            else
+                -- Tắt GUI, trở về bình thường
+                if existingGui then
+                    existingGui:Destroy()
+                end
+            end
+        end
+        
+        -- Giữ GUI khi nhân vật reset
+        game.Players.LocalPlayer.CharacterAdded:Connect(function()
+            local existingGui = game.CoreGui:FindFirstChild(guiName)
+            if not existingGui then
+                -- Nếu GUI không tồn tại, tạo mới khi nhân vật respawn
+                toggleBlackScreen(true)
+            end
+        end)        
     end
 })
 
@@ -425,26 +447,48 @@ OtherTab:AddToggle("manhinhtrang", {
     Title = "White screen",
     Description = "Reduce lag",
     Callback = function(Value)
-        local player = game.Players.LocalPlayer
-        local screenGui = Instance.new("ScreenGui")
-        
-        -- Đảm bảo GUI không bị xóa khi reset
-        screenGui.ResetOnSpawn = false  
-        screenGui.Name = "FullScreenWhiteGui"
-        screenGui.Parent = game.CoreGui
-        
-        -- Tạo khung phủ kín toàn bộ màn hình
-        local whiteFrame = Instance.new("Frame")
-        whiteFrame.Size = UDim2.fromScale(1, 1)
-        whiteFrame.Position = UDim2.fromScale(0, 0)
-        whiteFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Màu trắng
-        whiteFrame.BorderSizePixel = 0
-        whiteFrame.Parent = screenGui
-        
-        -- Đảm bảo GUI vẫn tồn tại sau reset
-        player.CharacterAdded:Connect(function()
-            if not screenGui.Parent then
+        local guiName = "FullScreenColorGui"
+
+        -- Hàm tạo GUI với màu sắc
+        local function createScreenGui(color)
+            -- Kiểm tra GUI có tồn tại không
+            local existingGui = game.CoreGui:FindFirstChild(guiName)
+            if not existingGui then
+                -- Tạo mới nếu chưa có
+                local screenGui = Instance.new("ScreenGui")
+                screenGui.Name = guiName
+                screenGui.ResetOnSpawn = false  -- Quan trọng: Đảm bảo GUI không reset khi nhân vật reset
                 screenGui.Parent = game.CoreGui
+        
+                local frame = Instance.new("Frame")
+                frame.Size = UDim2.fromScale(1, 1)
+                frame.Position = UDim2.fromScale(0, 0)
+                frame.BackgroundColor3 = color
+                frame.BorderSizePixel = 0
+                frame.Parent = screenGui
+            end
+        end
+        
+        -- Hàm toggle
+        local function toggleWhiteScreen(state)
+            local existingGui = game.CoreGui:FindFirstChild(guiName)
+            if state then
+                -- Bật màn hình màu trắng
+                createScreenGui(Color3.fromRGB(255, 255, 255))
+            else
+                -- Tắt GUI, trở về bình thường
+                if existingGui then
+                    existingGui:Destroy()
+                end
+            end
+        end
+        
+        -- Giữ GUI khi nhân vật reset
+        game.Players.LocalPlayer.CharacterAdded:Connect(function()
+            local existingGui = game.CoreGui:FindFirstChild(guiName)
+            if not existingGui then
+                -- Nếu GUI không tồn tại, tạo mới khi nhân vật respawn
+                toggleWhiteScreen(true)
             end
         end)        
     end
