@@ -35,7 +35,7 @@ local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
 local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
 local IslandTab = Window:AddTab({ Title = "One Click", Icon = "" })
-local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
+local OtherTab = Window:AddTab({ Title = "Reduce lag", Icon = "" })
 
 -- Tab Main
 MainTab:AddToggle("AutochestToggle", {
@@ -389,5 +389,63 @@ IslandTab:AddToggle("oneclick", {
                 task.cancelAll() -- Hủy toàn bộ task đang chạy (nếu khả dụng)
             end
         end 
+    end
+})
+
+OtherTab:AddToggle("manhinhden", {
+    Title = "Black screen",
+    Description = "Reduce lag",
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local screenGui = Instance.new("ScreenGui")
+        
+        -- Đảm bảo GUI không bị xóa khi reset
+        screenGui.ResetOnSpawn = false  
+        screenGui.Name = "FullScreenBlackGui"
+        screenGui.Parent = game.CoreGui
+        
+        -- Tạo khung phủ kín toàn bộ màn hình
+        local blackFrame = Instance.new("Frame")
+        blackFrame.Size = UDim2.fromScale(1, 1)
+        blackFrame.Position = UDim2.fromScale(0, 0)
+        blackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Màu đen
+        blackFrame.BorderSizePixel = 0
+        blackFrame.Parent = screenGui
+        
+        -- Đảm bảo GUI vẫn tồn tại sau reset
+        player.CharacterAdded:Connect(function()
+            if not screenGui.Parent then
+                screenGui.Parent = game.CoreGui
+            end
+        end)
+    end
+})
+
+OtherTab:AddToggle("manhinhtrang", {
+    Title = "White screen",
+    Description = "Reduce lag",
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local screenGui = Instance.new("ScreenGui")
+        
+        -- Đảm bảo GUI không bị xóa khi reset
+        screenGui.ResetOnSpawn = false  
+        screenGui.Name = "FullScreenWhiteGui"
+        screenGui.Parent = game.CoreGui
+        
+        -- Tạo khung phủ kín toàn bộ màn hình
+        local whiteFrame = Instance.new("Frame")
+        whiteFrame.Size = UDim2.fromScale(1, 1)
+        whiteFrame.Position = UDim2.fromScale(0, 0)
+        whiteFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Màu trắng
+        whiteFrame.BorderSizePixel = 0
+        whiteFrame.Parent = screenGui
+        
+        -- Đảm bảo GUI vẫn tồn tại sau reset
+        player.CharacterAdded:Connect(function()
+            if not screenGui.Parent then
+                screenGui.Parent = game.CoreGui
+            end
+        end)        
     end
 })
