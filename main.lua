@@ -34,7 +34,7 @@ end)
 local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
 local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
-local IslandTab = Window:AddTab({ Title = "Soon", Icon = "" })
+local IslandTab = Window:AddTab({ Title = "One Click", Icon = "" })
 local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
 
 -- Tab Main
@@ -276,5 +276,214 @@ FruitTab:AddToggle("Random Fruit", {
         else
             _G.Random_Auto = false -- Đảm bảo _G.Random_Auto được gán là false khi tắt
         end
+    end
+})
+
+local fruitsESP = {}
+local findFruitEnabled = false
+local function createESP(fruit)
+    if not fruit:FindFirstChild("Handle") then return end
+
+    if fruitsESP[fruit] then
+        fruitsESP[fruit]:Destroy()
+        fruitsESP[fruit] = nil
+    end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = fruit.Handle
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 2, 0)
+    billboard.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel", billboard)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.Text = fruit.Name
+    label.TextColor3 = Color3.fromRGB(255, 255, 0)
+    label.TextScaled = true
+
+    billboard.Parent = fruit
+    fruitsESP[fruit] = billboard
+end
+
+local function findFruits()
+    local fruits = {}
+    for _, object in pairs(workspace:GetChildren()) do
+        if object:IsA("Tool") and object.Name:lower():find("fruit") then
+            table.insert(fruits, object)
+            if findFruitEnabled then
+                createESP(object)
+            end
+        end
+    end
+    return fruits
+end
+
+local function teleportToFruit(fruit)
+    if fruit and fruit:FindFirstChild("Handle") then
+        if findFruitEnabled then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = fruit.Handle.CFrame
+        end
+    end
+end
+
+local runService = game:GetService("RunService")
+runService.Heartbeat:Connect(function()
+    local fruits = findFruits()
+    if #fruits > 0 then
+        for _, fruit in pairs(fruits) do
+            if fruit.Parent == workspace then
+                teleportToFruit(fruit)
+                wait(1)
+            end
+        end
+    end
+end)
+
+workspace.ChildAdded:Connect(function(child)
+    if child:IsA("Tool") and child.Name:lower():find("fruit") then
+        wait(0.5)
+        if findFruitEnabled then
+            createESP(child)
+        end
+        teleportToFruit(child)
+    end
+end)
+
+workspace.ChildRemoved:Connect(function(child)
+    if fruitsESP[child] then
+        fruitsESP[child]:Destroy()
+        fruitsESP[child] = nil
+    end
+end)
+
+FruitTab:AddToggle("Find Fruit", {
+    Title = "Find Fruit",
+    Description = "test giùm t",
+    Callback = function(Value)
+        findFruitEnabled = Value
+        if not findFruitEnabled then
+            local fruits = findFruits()
+            for _, fruit in ipairs(fruits) do
+                if fruitsESP[fruit] then
+                    fruitsESP[fruit]:Destroy()
+                    fruitsESP[fruit] = nil
+                end
+            end
+        end
+    end
+})
+
+
+IslandTab:AddToggle("oneclick", {
+    Title = "One Click (beta)",
+    Description = "Note: oneclick cannot be disabled (will fix soon)",
+    Callback = function(Value)
+        if Value then
+            getgenv().ConfigsKaitun = {
+                ["Safe Mode"] = false, -- Will be pass all anti cheat (but slow farm)
+                
+                ["Melee"] = {
+                    ["Death Step"] = true,
+                    ["Electric Claw"] = true,
+                    ["Dragon Talon"] = true,
+                    ["Sharkman Karate"] = true,
+                    ["Superhuman"] = true,
+                    ["God Human"] = true,
+                },
+            
+                ["Sword"] = {
+                    -- : World 1
+                    ["Saber"] = true,
+                    ["Pole"] = false,
+                    -- : World 2
+                    ["Midnight Blade"] = true,
+                    ["Shisui"] = true,
+                    ["Saddi"] = true,
+                    ["Wando"] = true,
+                    ["Rengoku"] = true,
+                    ["True Triple Katana"] = true,
+                    -- : World 3
+                    ["Yama"] = true,
+                    ["Tushita"] = true,
+                    ["Canvander"] = true,
+                    ["Buddy Sword"] = true,
+                    ["Twin Hooks"] = true,
+                    ["Hallow Scythe"] = true,
+                    ["Cursed Dual Katana"] = true,
+                },
+            
+                ["Gun"] = {
+                    -- : World 2
+                    ["Kabucha"] = true,
+                    -- : World 3
+                    ["Venom Bow"] = true,
+                    ["Skull Guitar"] = true,
+                },
+            
+                ["Mastery"] = {
+                    ["Melee"] = true,
+                    ["Sword"] = true,
+                    ["Devil Fruits"] = true,
+            
+                    ["Configs"] = {
+                        ["Selected All Sword"] = true,
+                        ["Select Sword"] = {"Saber","Cursed Dual Katana"},
+                    }
+                },
+            
+                ["Race"] = {
+                    ["v2"] = true,
+                    ["v3"] = true,
+                    ["Locked"] = {
+                        ["Mink"] = true,
+                        ["Human"] = true,
+                        ["Skypiea"] = true,
+                        ["Fishman"] = true,
+                    },
+                },
+            
+                ["Fruit"] = {
+                    ["Main Fruit"] = {"Dough-Dough"},
+                    ["Sec Fruit"] = {"Flame-Flame", "Ice-Ice", "Quake-Quake", "Light-Light", "Dark-Dark", "Spider-Spider", "Rumble-Rumble", "Magma-Magma", "Buddha-Buddha"},
+                    ["Safe Fruit"] = {
+                        "Dough-Dough",
+                        "Dragon-Dragon"
+                    },
+                },
+            
+                ["Quest"] = {
+                    ["Rainbow Haki"] = true,
+                    ["Pull Lever"] = true,
+                    ["Musketeer Hat"] = true,
+                    ["Dough Mirror"] = true,
+                    ["Shark Anchor"] = {
+                        ["Enable"] = true,
+                        ["Money"] = 25_000_000,
+                    },
+                },
+            
+                ["Currency"] = {
+                    ["Lock Fragment"] = 30_000,
+                },
+            
+                ["Performance"] = {
+                    ["White Screen"] = false,
+                    ["Booster FPS"] = false,
+                    ["Lock FPS"] = 240,
+                    ["AFK Timeout"] = 150,
+                },
+            }
+            loadstring(game:HttpGet("https://api.realaya.xyz/v1/files/l/73mkp0aqyfo4ypy8hvl0nz10lq49fey5.lua"))()
+        else
+            -- Hủy bỏ mọi cấu hình và trả về trạng thái mặc định
+            getgenv().ConfigsKaitun = nil
+            getgenv().Random_Auto = false
+            
+            -- Ngắt vòng lặp nếu có
+            if task.cancelAll then
+                task.cancelAll() -- Hủy toàn bộ task đang chạy (nếu khả dụng)
+            end
+        end 
     end
 })
