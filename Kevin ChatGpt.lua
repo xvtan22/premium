@@ -488,9 +488,8 @@ IslandTab:AddToggle("oneclick", {
     end
 })
 
-IslandTab:AddToggle({
-    Name = "Fix Lag",
-    Default = false,
+IslandTab:AddToggle("fixlag", {
+    Title = "Fix lag",
     Description = "Recommended for oneclick",
     Callback = function(Value)
         if Value then
