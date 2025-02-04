@@ -487,19 +487,3 @@ IslandTab:AddToggle("oneclick", {
         end 
     end
 })
-
-IslandTab:AddToggle("fixlag", {
-    Title = "Fix lag",
-    Description = "Recommended for oneclick",
-    Callback = function(Value)
-        if Value then
-            local workspace = game.Workspace
-
-            for _, item in pairs(workspace:GetChildren()) do
-                if not (item:IsA("Model") and item:FindFirstChild("Humanoid")) and item.Name ~= "Players" then
-                    item:Destroy()
-                end
-            end
-        end
-    end
-})
