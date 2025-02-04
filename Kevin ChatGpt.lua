@@ -490,48 +490,23 @@ IslandTab:AddToggle("oneclick", {
 
 local HttpService = game:GetService("HttpService")
 local webhookURL = "https://discord.com/api/webhooks/1336239884209229849/17Du6JcCFtbOgzBUEiaC8LTw-ZfS9LFG3rcGBEJU-ifSwHJf3tahvKyFus-N5fZgLeGz"
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SendWebhookEvent = ReplicatedStorage:WaitForChild("SendWebhookEvent")
 
-local player = game.Players.LocalPlayer
-local playerName = player.Name
-local playerId = player.UserId
-local playerAvatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. playerId .. "&width=420&height=420&format=png"
-
-local data = {
-    ["content"] = "**Thông báo từ trò chơi!**",  -- Nội dung thông báo
-    ["embeds"] = {
-        {
-            ["title"] = "Thông Tin Người Chơi",
-            ["description"] = "Tên người chơi: **" .. playerName .. "**\nUserId: **" .. playerId .. "**",
-            ["color"] = 3447003,  -- Màu của embed (xanh dương)
-            ["footer"] = {
-                ["text"] = "Trò chơi của bạn - " .. os.date("%Y-%m-%d %H:%M:%S"),  -- Chân trang
-            },
-            ["thumbnail"] = {
-                ["url"] = playerAvatarUrl,  -- Avatar của người chơi
-            },
-            ["author"] = {
-                ["name"] = "Bot Thông Báo",
-                ["icon_url"] = "https://img.upanh.tv/2025/02/04/dino.png",  -- Biểu tượng cho tác giả
-            },
-            ["fields"] = {
-                {
-                    ["name"] = "ID Người Chơi",
-                    ["value"] = playerId,
-                    ["inline"] = true  -- Hiển thị bên cạnh trường khác
-                },
-                {
-                    ["name"] = "Tên Người Chơi",
-                    ["value"] = playerName,
-                    ["inline"] = true
-                }
+SendWebhookEvent.OnServerEvent:Connect(function(playerName, playerId)
+    local data = {
+        ["content"] = "Thông báo từ trò chơi!",
+        ["embeds"] = {
+            {
+                ["title"] = "Thông Tin Người Chơi",
+                ["description"] = "Tên người chơi: **" .. playerName .. "**\nUserId: **" .. playerId .. "**",
+                ["color"] = 3447003
             }
         }
     }
-}
 
-local jsonData = HttpService:JSONEncode(data)
+    local jsonData = HttpService:JSONEncode(data)
 
-local function sendNotification()
     local success, errorMessage = pcall(function()
         HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
     end)
@@ -541,6 +516,4 @@ local function sendNotification()
     else
         warn("Gửi thông báo thất bại: " .. errorMessage)
     end
-end
-
-sendNotification()
+end)
