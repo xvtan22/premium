@@ -381,7 +381,7 @@ IslandTab:AddToggle("oneclick", {
     Callback = function(Value)
         if Value then
             getgenv().ConfigsKaitun = {
-                ["Safe Mode"] = true, -- Will be pass all anti cheat (but slow farm)
+                ["Safe Mode"] = false, -- Will be pass all anti cheat (but slow farm)
                 
                 ["Melee"] = {
                     ["Death Step"] = true,
