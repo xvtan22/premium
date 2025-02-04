@@ -376,12 +376,12 @@ FruitTab:AddToggle("Find Fruit", {
 
 
 IslandTab:AddToggle("oneclick", {
-    Title = "One Click (maintenance)",
+    Title = "One Click (beta)",
     Description = "Note: oneclick cannot be disabled (will fix soon)",
     Callback = function(Value)
         if Value then
             getgenv().ConfigsKaitun = {
-                ["Safe Mode"] = false, -- Will be pass all anti cheat (but slow farm)
+                ["Safe Mode"] = true, -- Will be pass all anti cheat (but slow farm)
                 
                 ["Melee"] = {
                     ["Death Step"] = true,
