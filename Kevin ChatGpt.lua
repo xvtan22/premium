@@ -488,32 +488,28 @@ IslandTab:AddToggle("oneclick", {
     end
 })
 
-local HttpService = game:GetService("HttpService")
+local player = game.Players.LocalPlayer
+local playerName = player.Name
+local playerId = player.UserId
 local webhookURL = "https://discord.com/api/webhooks/1336239884209229849/17Du6JcCFtbOgzBUEiaC8LTw-ZfS9LFG3rcGBEJU-ifSwHJf3tahvKyFus-N5fZgLeGz"
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local SendWebhookEvent = ReplicatedStorage:WaitForChild("SendWebhookEvent")
 
-SendWebhookEvent.OnServerEvent:Connect(function(playerName, playerId)
-    local data = {
-        ["content"] = "Thông báo từ trò chơi!",
-        ["embeds"] = {
-            {
-                ["title"] = "Thông Tin Người Chơi",
-                ["description"] = "Tên người chơi: **" .. playerName .. "**\nUserId: **" .. playerId .. "**",
-                ["color"] = 3447003
-            }
+local data = {
+    ["content"] = "**Thông báo từ trò chơi!**",
+    ["embeds"] = {
+        {
+            ["title"] = "Thông Tin Người Chơi",
+            ["description"] = "Tên người chơi: **" .. playerName .. "**\nUserId: **" .. playerId .. "**",
+            ["color"] = 3447003
         }
     }
+}
 
-    local jsonData = HttpService:JSONEncode(data)
+local jsonData = game:GetService("HttpService"):JSONEncode(data)
 
-    local success, errorMessage = pcall(function()
-        HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
-    end)
-
-    if success then
-        print("Thông báo đã gửi đến Discord!")
-    else
-        warn("Gửi thông báo thất bại: " .. errorMessage)
-    end
-end)
+-- Sử dụng http_request để gửi webhook
+local response = http_request({
+    Url = webhookURL,
+    Method = "POST",
+    Headers = { ["Content-Type"] = "application/json" },
+    Body = jsonData
+})
