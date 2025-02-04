@@ -4,9 +4,9 @@ local function safeLoad(url)
     end)
     
     if success then
-        print("Script executado com sucesso!")
+        print("Chạy con cờ hó m script thành công!")
     else
-        warn("Erro ao executar o script: " .. errorMsg)
+        warn("executor m có vấn đề déo chạy đc: " .. errorMsg)
     end
 end
 
