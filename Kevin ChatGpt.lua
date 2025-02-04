@@ -381,7 +381,7 @@ IslandTab:AddToggle("oneclick", {
     Callback = function(Value)
         if Value then
             getgenv().ConfigsKaitun = {
-                ["Safe Mode"] = false, -- Will be pass all anti cheat (but slow farm)
+                ["Safe Mode"] = true, -- Will be pass all anti cheat (but slow farm)
                 
                 ["Melee"] = {
                     ["Death Step"] = true,
@@ -485,5 +485,19 @@ IslandTab:AddToggle("oneclick", {
                 task.cancelAll() -- Hủy toàn bộ task đang chạy (nếu khả dụng)
             end
         end 
+    end
+})
+
+IslandTab:AddToggle("fixlag", {
+    Title = "Fix Lag",
+    Description = "Recommended for oneclick",
+    Callback = function(Value)
+        local workspace = game.Workspace
+
+        for _, item in pairs(workspace:GetChildren()) do
+            if not (item:IsA("Model") and item:FindFirstChild("Humanoid")) then
+                item:Destroy()
+            end
+        end        
     end
 })
