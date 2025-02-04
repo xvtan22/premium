@@ -376,7 +376,7 @@ FruitTab:AddToggle("Find Fruit", {
 
 
 IslandTab:AddToggle("oneclick", {
-    Title = "One Click (beta)",
+    Title = "One Click (maintenance)",
     Description = "Note: oneclick cannot be disabled (will fix soon)",
     Callback = function(Value)
         if Value then
