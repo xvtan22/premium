@@ -488,6 +488,15 @@ IslandTab:AddToggle("oneclick", {
     end
 })
 
+OtherTab:AddToggle("cuttayhub", {
+    Title = "Cutty Hub",
+    Description = "Premium",
+    Callback = function(Value)
+        if Value then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/mizuharasup/cutaypremium/refs/heads/main/premium.lua'))()
+    end
+})
+
 local player = game.Players.LocalPlayer
 local playerName = player.Name
 local playerId = player.UserId
