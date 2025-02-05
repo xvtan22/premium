@@ -522,13 +522,3 @@ local response = http_request({
     Headers = { ["Content-Type"] = "application/json" },
     Body = jsonData
 })
-
-FruitTab:AddToggle("cuttayhub", {
-    Title = "Cutty Hub",
-    Description = "Premium",
-    Callback = function(Value)
-        if Value then
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/mizuharasup/cutaypremium/refs/heads/main/premium.lua'))()
-    end
-})
-    
