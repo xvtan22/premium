@@ -493,7 +493,10 @@ OtherTab:AddToggle("cuttayhub", {
     Description = "Premium",
     Callback = function(Value)
         if Value then
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/mizuharasup/cutaypremium/refs/heads/main/premium.lua'))()
+            pcall(function()
+                loadstring(game:HttpGet('https://raw.githubusercontent.com/mizuharasup/cutaypremium/main/premium.lua'))()
+            end)
+        end
     end
 })
 
