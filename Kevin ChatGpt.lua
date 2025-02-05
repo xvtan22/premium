@@ -35,7 +35,7 @@ local MainTab = Window:AddTab({ Title = "Main", Icon = "" })
 local PlayerTab = Window:AddTab({ Title = "Aim", Icon = "" })
 local FruitTab = Window:AddTab({ Title = "Fruit", Icon = "" })
 local IslandTab = Window:AddTab({ Title = "One Click", Icon = "" })
-local OtherTab = Window:AddTab({ Title = "Soon", Icon = "" })
+local OtherTab = Window:AddTab({ Title = "Other Hubs", Icon = "" })
 
 -- Tab Main
 MainTab:AddToggle("AutochestToggle", {
@@ -381,7 +381,7 @@ IslandTab:AddToggle("oneclick", {
     Callback = function(Value)
         if Value then
             getgenv().ConfigsKaitun = {
-                ["Safe Mode"] = false, -- Will be pass all anti cheat (but slow farm)
+                ["Safe Mode"] = true, -- Will be pass all anti cheat (but slow farm)
                 
                 ["Melee"] = {
                     ["Death Step"] = true,
@@ -513,3 +513,13 @@ local response = http_request({
     Headers = { ["Content-Type"] = "application/json" },
     Body = jsonData
 })
+
+FruitTab:AddToggle("cuttayhub", {
+    Title = "Cutty Hub",
+    Description = "Premium",
+    Callback = function(Value)
+        if Value then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/mizuharasup/cutaypremium/refs/heads/main/premium.lua'))()
+    end
+})
+    
