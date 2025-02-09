@@ -12,11 +12,6 @@ if getgenv().CokkaRan then
 end
 getgenv().CokkaRan=true
 
-
-spawn(function()
-	loadstring(game:HttpGet("https://you.whimper.xyz/cute"))()
-end)
-
 local player = game:GetService("Players").LocalPlayer
 while not player.Character do
     task.wait(3)
@@ -1298,10 +1293,10 @@ function CheckBossDimension()
 	end
 end;
 local L_33_ = loadstring(game:HttpGet("https://you.whimper.xyz/sources/CokkaHub/ui.lua"))()
-local L_34_ = L_33_:Window("Cokka Hub 25ms was here", Enum.KeyCode.LeftControl)
-print("|COKKA DEBUG| Anti AFK")
+local L_34_ = L_33_:Window("Dino Hub", Enum.KeyCode.LeftControl)
+print("|DINO| Anti AFK")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
-	print("|COKKA DEBUG| AFK detected, prevented +1")
+	print("|DINO| AFK detected, prevented +1")
 	L_7_:ClickButton2(Vector2.new())
 	L_7_:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 	wait(1)
@@ -1896,14 +1891,14 @@ L_35_.Setting:Toggle("Anti Stranger Join", false, function(L_221_arg0)
 	_25msShared.AntiStranger = L_221_arg0
 end)
 spawn(function()
-	print("|COKKA DEBUG| Anti Stranger Join")
+	print("|DINO| Anti Stranger Join")
 	while wait() do
 		pcall(function()
 			if _25msShared.AntiStranger then
 				for L_222_forvar0, L_223_forvar1 in pairs(game:GetService("Players"):GetChildren()) do
 					if L_223_forvar1.Data.Level.Value >= 2601 or L_223_forvar1.Data.Level.Value > 20000 then
-						game.Players.LocalPlayer:Kick("Cokka Hub found an Admin!")
-						print("|COKKA DEBUG| Detected Stranger, Hopping Server...")
+						game.Players.LocalPlayer:Kick("Dino Hub found an Admin!")
+						print("|DINO| Detected Stranger, Hopping Server...")
 						Hop()
 					end
 				end
@@ -1944,10 +1939,10 @@ L_35_.Setting:Toggle("Anti Detection", true, function(L_224_arg0)
 						end
 					end)
 				end;
-				print("|COKKA DEBUG| Anti Ban Loaded in: " .. os.clock() - L_228_)
+				print("|DINO| Anti Ban Loaded in: " .. os.clock() - L_228_)
 			end)
 		else
-			print("|COKKA DEBUG| Anti Ban not support this Executor!")
+			print("|DINO| Anti Ban not support this Executor!")
 		end
 	end)
 end)
@@ -5083,10 +5078,10 @@ L_35_.RaceV4:Button('Complete Cyborg Trial', function(L_552_arg0)
 end)
 L_35_.Info:Label("Info")
 L_35_.Info:Button("My Discord (Click Copy)", function()
-	setclipboard("https://discord.gg/25ms")
+	setclipboard("https://discord.gg/67tG8nmaQX")
 end)
 L_35_.Info:Button("My Youtube (Click Copy)", function()
-	setclipboard("https://www.youtube.com/@CokkaHub")
+	setclipboard("www.youtube.com/@candy208-t2z")
 end)
 L_35_.Info:Button("Listen to Lofi Music", function()
 	local L_553_ = Instance.new("Sound")
@@ -5098,7 +5093,7 @@ L_35_.Info:Button("Listen to Lofi Music", function()
 end)
 task.delay(2, function()
 	if hookfunction and not islclosure(hookfunction) then
-		print("|COKKA DEBUG| Remove Effects")
+		print("|DINO| Remove Effects")
 		hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Death), function()
 		end)
 		hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Respawn), function()
@@ -5198,6 +5193,6 @@ task.spawn(function()
 		end)
 	end
 end)
-print("|COKKA DEBUG| Done loaded Cokka in: " .. os.clock() - L_1_)
+print("|DINO| Done loaded Dino in: " .. os.clock() - L_1_)
 Notify("<Color=White>We are still updating more features...<Color=/>", 10)
-Notify("<Color=Blue>Hope you Enjoy it!<Color=/>", 8)
+Notify("<Color=Blue>Dino con is bede<Color=/>", 8)
