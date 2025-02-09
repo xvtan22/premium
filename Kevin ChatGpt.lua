@@ -129,7 +129,7 @@ MainTab:AddToggle("AutochestToggle", {
     end
 })
 
-function CheckLevel()
+local function CheckLevel()
     local v197 = game:GetService("Players").LocalPlayer.Data.Level.Value;
     if Sea1 then
         if ((v197 == 1) or (v197 <= 9) or (SelectMonster == "Bandit")) then
@@ -776,15 +776,13 @@ MainTab:AddToggle("autofarmlv", {
     Description = "may be have bugs",
     Callback = function(Value)
         Default = false
-    });
-    v49:OnChanged(function(v237)
         _G.AutoLevel = v237;
         if (v237 == false) then
             wait();
             Tween(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame);
             wait();
         end
-    end);
+    end
     v17.ToggleLevel:SetValue(false);
     spawn(function()
         while task.wait() do
@@ -832,53 +830,8 @@ MainTab:AddToggle("autofarmlv", {
             end
         end
     end);
-    local v50 = v16.Main:AddToggle("ToggleMobAura", {
-        Title = "Đấm Quái Gần",
-        Description = "farm near mob",
-        Default = false
     });
-    v50:OnChanged(function(v238)
-        _G.AutoNear = v238;
-        if (v238 == false) then
-            wait();
-            Tween(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame);
-            wait();
-        end
-    end);
-    v17.ToggleMobAura:SetValue(false);
-    spawn(function()
-        while wait() do
-            if _G.AutoNear then
-                pcall(function()
-                    for v838, v839 in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if (v839:FindFirstChild("Humanoid") and v839:FindFirstChild("HumanoidRootPart") and (v839.Humanoid.Health > 0)) then
-                            if v839.Name then
-                                if ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v839:FindFirstChild("HumanoidRootPart").Position).Magnitude <= 5000) then
-                                    repeat
-                                        wait(_G.Fast_Delay);
-                                        AttackNoCoolDown();
-                                        bringmob = true;
-                                        AutoHaki();
-                                        EquipTool(SelectWeapon);
-                                        Tween(v839.HumanoidRootPart.CFrame * Pos);
-                                        v839.HumanoidRootPart.Size = Vector3.new(60, 60, 60);
-                                        v839.HumanoidRootPart.Transparency = 1;
-                                        v839.Humanoid.JumpPower = 0;
-                                        v839.Humanoid.WalkSpeed = 0;
-                                        v839.HumanoidRootPart.CanCollide = false;
-                                        FarmPos = v839.HumanoidRootPart.CFrame;
-                                        MonFarm = v839.Name;
-                                    until not _G.AutoNear or not v839.Parent or (v839.Humanoid.Health <= 0) or not game.Workspace.Enemies:FindFirstChild(v839.Name)
-                                    bringmob = false;
-                                end
-                            end
-                        end
-                    end
-                end);
-            end
-        end
-    end);
-
+   
 -- Tab Player - Aimbot and ESP player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
 local lockCamConnection = nil
