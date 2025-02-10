@@ -130,17 +130,27 @@ MainTab:AddToggle("AutochestToggle", {
 })
 
 MainTab:AddToggle("hopdougking", {
-    Title = "Hop server has Dough King or Indra",
+    Title = "Hop server has Dough King",
     Description = "May have bugs",
     Default = false,
     Callback = function(Value)
+        print("Toggle status:", Value) -- Debug
+
         if Value then
             getgenv().DoughKing = function()
+                print("Starting DoughKing function...")
                 local url = 'https://andepzaihub.onrender.com/api/status'
-                local foundServers = game:GetService('HttpService'):JSONDecode(game:HttpGet(url))
+                local success, response = pcall(function()
+                    return game:GetService('HttpService'):JSONDecode(game:HttpGet(url))
+                end)
+
+                if not success then
+                    warn("Failed to fetch servers:", response)
+                    return
+                end
 
                 local chooses = nil
-                for _, v in pairs(foundServers) do
+                for _, v in pairs(response) do
                     if v.jobId ~= game.JobId then
                         chooses = v
                         break
@@ -148,7 +158,10 @@ MainTab:AddToggle("hopdougking", {
                 end
 
                 if chooses then
+                    print("Teleporting to server:", chooses.jobId)
                     game:GetService("TeleportService"):TeleportToPlaceInstance(7449423635, chooses.jobId, game.Players.LocalPlayer)
+                else
+                    warn("No available server found.")
                 end
             end
 
@@ -157,14 +170,17 @@ MainTab:AddToggle("hopdougking", {
                     if (Boss.Name == "rip_indra True Form" or Boss.Name == "Dough King") 
                         and DetectingPart(Boss) 
                         and Boss.Humanoid.Health > 0 then
+                        print("Boss found in Workspace!")
                         return Boss
                     end
                 end
                 for _, Boss in pairs(game.ReplicatedStorage:GetChildren()) do
                     if Boss.Name == "rip_indra True Form" or Boss.Name == "Dough King" then
+                        print("Boss found in ReplicatedStorage!")
                         return Boss
                     end
                 end
+                print("No boss found.")
                 return nil
             end
 
@@ -177,15 +193,19 @@ MainTab:AddToggle("hopdougking", {
                 while getgenv().DoughKingLoop do
                     task.wait(2)
                     if not CheckBossAttack() then
+                        print("Boss not found, hopping server...")
                         repeat
                             task.wait(1.8)
                             DoughKing()
                         until CheckBossAttack() or not getgenv().DoughKingLoop
+                    else
+                        print("Boss found, stopping hop.")
                     end
                 end
             end)
         else
             getgenv().DoughKingLoop = false
+            print("Stopped hopping.")
         end
     end
 })
