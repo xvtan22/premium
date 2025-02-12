@@ -39,7 +39,7 @@ local OtherTab = Window:AddTab({ Title = "Other Hubs", Icon = "" })
 
 -- Tab Main
 
-function CheckLevel()
+loca function CheckLevel()
     local v197 = game:GetService("Players").LocalPlayer.Data.Level.Value;
     if Sea1 then
         if ((v197 == 1) or (v197 <= 9) or (SelectMonster == "Bandit")) then
@@ -681,66 +681,55 @@ function CheckLevel()
     end
 end
 
-Main:AddToggle("ToggleLevel", {
-    Title = "Cày Cấp",
-    Description = "",
-    Default = false
-});
-v49:OnChanged(function(v237)
-    _G.AutoLevel = v237;
-    if (v237 == false) then
-        wait();
-        Tween(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame);
-        wait();
-    end
-end);
-v17.ToggleLevel:SetValue(false);
-spawn(function()
-    while task.wait() do
-        if _G.AutoLevel then
-            pcall(function()
-                CheckLevel();
-                if (not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false)) then
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest");
-                    Tween(CFrameQ);
-                    if ((CFrameQ.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5) then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, QuestLv);
-                    end
-                elseif (string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true)) then
-                    for v1432, v1433 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if (v1433:FindFirstChild("Humanoid") and v1433:FindFirstChild("HumanoidRootPart") and (v1433.Humanoid.Health > 0)) then
-                            if (v1433.Name == Ms) then
-                                repeat
-                                    wait(_G.Fast_Delay);
-                                    AttackNoCoolDown();
-                                    bringmob = true;
-                                    AutoHaki();
-                                    EquipTool(SelectWeapon);
-                                    Tween(v1433.HumanoidRootPart.CFrame * Pos);
-                                    v1433.HumanoidRootPart.Size = Vector3.new(60, 60, 60);
-                                    v1433.HumanoidRootPart.Transparency = 1;
-                                    v1433.Humanoid.JumpPower = 0;
-                                    v1433.Humanoid.WalkSpeed = 0;
-                                    v1433.HumanoidRootPart.CanCollide = false;
-                                    FarmPos = v1433.HumanoidRootPart.CFrame;
-                                    MonFarm = v1433.Name;
-                                until not _G.AutoLevel or not v1433.Parent or (v1433.Humanoid.Health <= 0) or not game:GetService("Workspace").Enemies:FindFirstChild(v1433.Name) or (game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false)
-                                bringmob = false;
-                            end
-                        end
-                    end
-                    for v1434, v1435 in pairs(game:GetService("Workspace")['_WorldOrigin'].EnemySpawns:GetChildren()) do
-                        if string.find(v1435.Name, NameMon) then
-                            if ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v1435.Position).Magnitude >= 10) then
-                                Tween(v1435.HumanoidRootPart.CFrame * Pos);
-                            end
-                        end
-                    end
-                end
-            end);
+-- Tạo toggle Auto Farm Level
+MainTab:AddToggle("AutoFarmLevel", {
+    Title = "Auto Farm Level",
+    Description = "Tự động nhận nhiệm vụ và farm quái",
+    Callback = function(Value)
+        _G.AutoFarm = Value
+        if Value then
+            task.spawn(AutoFarmFunction)
         end
     end
-end);
+})
+
+-- Hàm kiểm tra nhiệm vụ hiện tại
+local function CheckQuest()
+    local questData = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("PlayerQuestInfo")
+    if questData and questData.CurrentQuest then
+        return questData.CurrentQuest -- Trả về nhiệm vụ hiện tại
+    end
+    return nil
+end
+
+-- Hàm tự động nhận nhiệm vụ
+local function AcceptQuest()
+    local LocalPlayer = game:GetService("Players").LocalPlayer
+    local questNPC = workspace:FindFirstChild("QuestGiver")
+    if questNPC then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = questNPC.CFrame
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "QuestName")
+    end
+end
+
+-- Hàm tự động farm quái
+local function AutoFarmFunction()
+    while _G.AutoFarm do
+        task.wait(1)
+        local currentQuest = CheckQuest()
+        if not currentQuest then
+            AcceptQuest() -- Nếu chưa có nhiệm vụ thì nhận
+        else
+            local mobs = workspace.Enemies:GetChildren()
+            for _, mob in ipairs(mobs) do
+                if mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then
+                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Attack")
+                end
+            end
+        end
+    end
+end
 
 MainTab:AddToggle("AutochestToggle", {
     Title = "Auto collect chest",
