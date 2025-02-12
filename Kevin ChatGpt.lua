@@ -683,7 +683,7 @@ end
 -- Tạo toggle Auto Farm Level
 MainTab:AddToggle("AutoFarmLevel", {
     Title = "Auto Farm Level",
-    Description = "Tự động nhận nhiệm vụ và farm quái",
+    Description = "cac",
     Callback = function(Value)
         _G.AutoFarm = Value
         if Value then
@@ -697,13 +697,19 @@ MainTab:AddToggle("AutoFarmLevel", {
 -- Hàm kiểm tra cấp độ nhân vật
 local function CheckLevel()
     local LocalPlayer = game:GetService("Players").LocalPlayer
-    return LocalPlayer and LocalPlayer.Data and LocalPlayer.Data.Level.Value or 1
+    if LocalPlayer and LocalPlayer:FindFirstChild("Data") and LocalPlayer.Data:FindFirstChild("Level") then
+        return LocalPlayer.Data.Level.Value
+    end
+    return 1
 end
 
 -- Hàm kiểm tra nhiệm vụ hiện tại
 local function CheckQuest()
-    local questData = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("PlayerQuestInfo")
-    if questData and questData.CurrentQuest then
+    local success, questData = pcall(function()
+        return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("PlayerQuestInfo")
+    end)
+    
+    if success and questData and questData.CurrentQuest then
         return questData.CurrentQuest -- Trả về nhiệm vụ hiện tại
     end
     return nil
@@ -713,8 +719,10 @@ end
 local function AcceptQuest()
     local LocalPlayer = game:GetService("Players").LocalPlayer
     local questNPC = workspace:FindFirstChild("QuestGiver")
-    if questNPC then
+    
+    if questNPC and LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
         LocalPlayer.Character.HumanoidRootPart.CFrame = questNPC.CFrame
+        task.wait(1) -- Tránh spam request
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "QuestName", CheckLevel())
     end
 end
@@ -727,11 +735,15 @@ local function AutoFarmFunction()
         if not currentQuest then
             AcceptQuest() -- Nếu chưa có nhiệm vụ thì nhận
         else
-            local mobs = workspace.Enemies:GetChildren()
+            local mobs = workspace:FindFirstChild("Enemies") and workspace.Enemies:GetChildren() or {}
             for _, mob in ipairs(mobs) do
-                if mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then
-                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Attack")
+                if mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 and mob:FindFirstChild("HumanoidRootPart") then
+                    local LocalPlayer = game:GetService("Players").LocalPlayer
+                    if LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
+                        task.wait(0.5) -- Giảm tải server
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Attack")
+                    end
                 end
             end
         end
