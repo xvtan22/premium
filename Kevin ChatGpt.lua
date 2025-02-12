@@ -681,7 +681,6 @@ function CheckLevel()
 end
 
 -- Tạo toggle Auto Farm Level
--- Tạo toggle Auto Farm Level
 MainTab:AddToggle("AutoFarmLevel", {
     Title = "Auto Farm Level",
     Description = "Tự động nhận nhiệm vụ và farm quái",
