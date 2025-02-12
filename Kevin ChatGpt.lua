@@ -145,9 +145,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/AnDepZaiHub/AnBeoDepT
     end
 })
 
-MainTab:AddToggle("hopripindra", {
-    Title = "Hop server has Rip_Indra",
-    Description = "May have bugs",
+MainTab:AddToggle("fastattack", {
+    Title = "Fast Attack",
+    Description = "help me test",
     Callback = function(Value)
 _G.FastAttack = true
 
