@@ -681,13 +681,16 @@ function CheckLevel()
 end
 
 -- Tạo toggle Auto Farm Level
+-- Tạo toggle Auto Farm Level
 MainTab:AddToggle("AutoFarmLevel", {
     Title = "Auto Farm Level",
-    Description = "have bugs",
+    Description = "Tự động nhận nhiệm vụ và farm quái",
     Callback = function(Value)
         _G.AutoFarm = Value
         if Value then
-            task.spawn(AutoFarmFunction)
+            task.spawn(function()
+                AutoFarmFunction()
+            end)
         end
     end
 })
