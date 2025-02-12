@@ -145,154 +145,89 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/AnDepZaiHub/AnBeoDepT
     end
 })
 
-MainTab:AddToggle("fastattack", {
+MainTab:AddToggle("FastAttackToggle", {
     Title = "Fast Attack",
-    Description = "help me test",
+    Description = "Bật/Tắt Fast Attack",
     Callback = function(Value)
-_G.FastAttack = true
+        _G.FastAttack = Value -- Gán giá trị của toggle vào biến _G.FastAttack
 
-if _G.FastAttack then
-    local _ENV = (getgenv or getrenv or getfenv)()
+        if _G.FastAttack then
+            local _ENV = (getgenv or getrenv or getfenv)()
 
-    local function SafeWaitForChild(parent, childName)
-        local success, result = pcall(function()
-            return parent:WaitForChild(childName)
-        end)
-        if not success or not result then
-            warn("noooooo: " .. childName)
-        end
-        return result
-    end
+            local function SafeWaitForChild(parent, childName)
+                local success, result = pcall(function()
+                    return parent:WaitForChild(childName)
+                end)
+                if not success or not result then
+                    warn("Không tìm thấy: " .. childName)
+                end
+                return result
+            end
 
-    local function WaitChilds(path, ...)
-        local last = path
-        for _, child in {...} do
-            last = last:FindFirstChild(child) or SafeWaitForChild(last, child)
-            if not last then break end
-        end
-        return last
-    end
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local Player = Players.LocalPlayer
 
-    local VirtualInputManager = game:GetService("VirtualInputManager")
-    local CollectionService = game:GetService("CollectionService")
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
-    local TeleportService = game:GetService("TeleportService")
-    local RunService = game:GetService("RunService")
-    local Players = game:GetService("Players")
-    local Player = Players.LocalPlayer
+            if not Player then
+                warn("Không tìm thấy người chơi cục bộ.")
+                return
+            end
 
-    if not Player then
-        warn("Không tìm thấy người chơi cục bộ.")
-        return
-    end
+            local Remotes = SafeWaitForChild(ReplicatedStorage, "Remotes")
+            if not Remotes then return end
 
-    local Remotes = SafeWaitForChild(ReplicatedStorage, "Remotes")
-    if not Remotes then return end
+            local Net = SafeWaitForChild(ReplicatedStorage, "Modules"):FindFirstChild("Net")
+            local RegisterAttack = Net and SafeWaitForChild(Net, "RE/RegisterAttack")
+            local RegisterHit = Net and SafeWaitForChild(Net, "RE/RegisterHit")
 
-    local Validator = SafeWaitForChild(Remotes, "Validator")
-    local CommF = SafeWaitForChild(Remotes, "CommF_")
-    local CommE = SafeWaitForChild(Remotes, "CommE")
+            if not RegisterAttack or not RegisterHit then
+                warn("Không tìm thấy hàm tấn công.")
+                return
+            end
 
-    local ChestModels = SafeWaitForChild(workspace, "ChestModels")
-    local WorldOrigin = SafeWaitForChild(workspace, "_WorldOrigin")
-    local Characters = SafeWaitForChild(workspace, "Characters")
-    local Enemies = SafeWaitForChild(workspace, "Enemies")
-    local Map = SafeWaitForChild(workspace, "Map")
+            local Enemies = SafeWaitForChild(workspace, "Enemies")
 
-    local EnemySpawns = SafeWaitForChild(WorldOrigin, "EnemySpawns")
-    local Locations = SafeWaitForChild(WorldOrigin, "Locations")
+            local function IsAlive(character)
+                return character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0
+            end
 
-    local RenderStepped = RunService.RenderStepped
-    local Heartbeat = RunService.Heartbeat
-    local Stepped = RunService.Stepped
+            local function ProcessEnemies(OthersEnemies, Folder)
+                local BasePart = nil
+                for _, Enemy in Folder:GetChildren() do
+                    local Head = Enemy:FindFirstChild("Head")
+                    if Head and IsAlive(Enemy) and Player:DistanceFromCharacter(Head.Position) < 100 then
+                        if Enemy ~= Player.Character then
+                            table.insert(OthersEnemies, { Enemy, Head })
+                            BasePart = Head
+                        end
+                    end
+                end
+                return BasePart
+            end
 
-    local Modules = SafeWaitForChild(ReplicatedStorage, "Modules")
-    local Net = SafeWaitForChild(Modules, "Net")
+            local function Attack(BasePart, OthersEnemies)
+                if not BasePart or #OthersEnemies == 0 then return end
+                RegisterAttack:FireServer(0)
+                RegisterHit:FireServer(BasePart, OthersEnemies)
+            end
 
-    local sethiddenproperty = sethiddenproperty or function(...) return ... end
-    local setupvalue = setupvalue or (debug and debug.setupvalue)
-    local getupvalue = getupvalue or (debug and debug.getupvalue)
-
-    local Settings = {
-        AutoClick = true,
-        ClickDelay = 0,
-    }
-
-    local Module = {}
-
-    Module.FastAttack = (function()
-        if _ENV.rz_FastAttack then
-            return _ENV.rz_FastAttack
-        end
-
-        local FastAttack = {
-            Distance = 100,
-            attackMobs = true,
-            attackPlayers = true,
-            Equipped = nil
-        }
-
-        local RegisterAttack = SafeWaitForChild(Net, "RE/RegisterAttack")
-        local RegisterHit = SafeWaitForChild(Net, "RE/RegisterHit")
-
-        local function IsAlive(character)
-        return character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0
-        end
-
-        local function ProcessEnemies(OthersEnemies, Folder)
-            local BasePart = nil
-            for _, Enemy in Folder:GetChildren() do
-                local Head = Enemy:FindFirstChild("Head")
-                if Head and IsAlive(Enemy) and Player:DistanceFromCharacter(Head.Position) < FastAttack.Distance then
-                    if Enemy ~= Player.Character then
-                        table.insert(OthersEnemies, { Enemy, Head })
-                        BasePart = Head
+            local function AttackNearest()
+                while _G.FastAttack do
+                    task.wait(0.1) -- Kiểm soát tốc độ đánh
+                    local OthersEnemies = {}
+                    local Part1 = ProcessEnemies(OthersEnemies, Enemies)
+                    if #OthersEnemies > 0 then
+                        Attack(Part1, OthersEnemies)
                     end
                 end
             end
-            return BasePart
+
+            task.spawn(AttackNearest) -- Chạy vòng lặp tấn công
         end
-
-        function FastAttack:Attack(BasePart, OthersEnemies)
-            if not BasePart or #OthersEnemies == 0 then return end
-            RegisterAttack:FireServer(Settings.ClickDelay or 0)
-            RegisterHit:FireServer(BasePart, OthersEnemies)
-        end
-
-        function FastAttack:AttackNearest()
-            local OthersEnemies = {}
-            local Part1 = ProcessEnemies(OthersEnemies, Enemies)
-            local Part2 = ProcessEnemies(OthersEnemies, Characters)
-            if #OthersEnemies > 0 then
-                self:Attack(Part1 or Part2, OthersEnemies)
-            else
-                task.wait(0)
-            end
-        end
-
-        function FastAttack:BladeHits()
-            local Equipped = IsAlive(Player.Character) and Player.Character:FindFirstChildOfClass("Tool")
-            if Equipped and Equipped.ToolTip ~= "Gun" then
-                self:AttackNearest()
-            else
-                task.wait(0)
-            end
-        end
-
-        task.spawn(function()
-            while task.wait(Settings.ClickDelay) do
-                if Settings.AutoClick then
-                    FastAttack:BladeHits()
-                end
-            end
-        end)
-
-        _ENV.rz_FastAttack = FastAttack
-        return FastAttack
     end
 })
-
-
 
 -- Tab Player - Aimbot and ESP player
 local aimBotActive = false -- Trạng thái hoạt động của Aimbot
