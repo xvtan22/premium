@@ -147,7 +147,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/AnDepZaiHub/AnBeoDepT
 
 MainTab:AddToggle("FastAttackToggle", {
     Title = "Fast Attack",
-    Description = "Bật/Tắt Fast Attack",
+    Description = "help me test",
     Callback = function(Value)
         _G.FastAttack = Value -- Gán giá trị của toggle vào biến _G.FastAttack
 
