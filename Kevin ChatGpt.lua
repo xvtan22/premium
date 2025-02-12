@@ -38,8 +38,7 @@ local IslandTab = Window:AddTab({ Title = "One Click", Icon = "" })
 local OtherTab = Window:AddTab({ Title = "Other Hubs", Icon = "" })
 
 -- Tab Main
-
-local function CheckLevel()
+function CheckLevel()
     local v197 = game:GetService("Players").LocalPlayer.Data.Level.Value;
     if Sea1 then
         if ((v197 == 1) or (v197 <= 9) or (SelectMonster == "Bandit")) then
@@ -684,7 +683,7 @@ end
 -- Tạo toggle Auto Farm Level
 MainTab:AddToggle("AutoFarmLevel", {
     Title = "Auto Farm Level",
-    Description = "Tự động nhận nhiệm vụ và farm quái",
+    Description = "have bugs",
     Callback = function(Value)
         _G.AutoFarm = Value
         if Value then
@@ -692,6 +691,12 @@ MainTab:AddToggle("AutoFarmLevel", {
         end
     end
 })
+
+-- Hàm kiểm tra cấp độ nhân vật
+local function CheckLevel()
+    local LocalPlayer = game:GetService("Players").LocalPlayer
+    return LocalPlayer and LocalPlayer.Data and LocalPlayer.Data.Level.Value or 1
+end
 
 -- Hàm kiểm tra nhiệm vụ hiện tại
 local function CheckQuest()
@@ -708,7 +713,7 @@ local function AcceptQuest()
     local questNPC = workspace:FindFirstChild("QuestGiver")
     if questNPC then
         LocalPlayer.Character.HumanoidRootPart.CFrame = questNPC.CFrame
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "QuestName")
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "QuestName", CheckLevel())
     end
 end
 
