@@ -38,7 +38,7 @@ local IslandTab = Window:AddTab({ Title = "One Click", Icon = "" })
 local OtherTab = Window:AddTab({ Title = "Other Hubs", Icon = "" })
 
 -- Tab Main
-function CheckLevel()
+local function CheckLevel()
     local v197 = game:GetService("Players").LocalPlayer.Data.Level.Value;
     if Sea1 then
         if ((v197 == 1) or (v197 <= 9) or (SelectMonster == "Bandit")) then
