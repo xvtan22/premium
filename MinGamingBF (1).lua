@@ -1,4 +1,4 @@
-shared.LoaderTitle = "Loading script...";
+shared.LoaderTitle = "Đăng Ký Kênh Min Gaming";
 shared.LoaderKeyFrames = {
     [1] = {
         1,
@@ -93,7 +93,7 @@ local v7 = CreateObject("ImageLabel", {
     Name = "UserImage",
     Parent = v6,
     BackgroundTransparency = 1,
-    Image = "rbxassetid://92675241378161",
+    Image = "rbxassetid://13717478897",
     Position = UDim2.new(0, 15, 0, 10),
     Size = UDim2.new(0, 50, 0, 50)
 });
@@ -313,9 +313,9 @@ local v15 = v14:CreateWindow({
     Title = "Dino Hub",
     SubTitle = "| .gg/67tG8nmaQX",
     TabWidth = 160,
-    Theme = "Dark",
+    Theme = "Light",
     Acrylic = false,
-    Size = UDim2.fromOffset(800, 600),
+    Size = UDim2.fromOffset(500, 320),
     MinimizeKey = Enum.KeyCode.End
 });
 local v16 = {
