@@ -22,7 +22,7 @@ local v16 = {
         Title = "Items"
     }),
     Setting = v15:AddTab({
-        Title = "Setiing"
+        Title = "Setting"
     }),
     Status = v15:AddTab({
         Title = "Server"
@@ -4374,7 +4374,7 @@ if Sea3 then
         end
         for v728, v729 in pairs(game:GetService("Workspace").Map.MysticIsland:GetDescendants()) do
             if v729:IsA("MeshPart") then
-                if (v729.MeshId == "rbxassetid://6745037796") then
+                if (v729.MeshId == "rbxassetid://92675241378161") then
                     return v729;
                 end
             end
