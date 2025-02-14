@@ -1,6 +1,3 @@
--- discord.gg/25ms
-
-
 shared.LoaderTitle = "Đăng Ký Kênh Min Gaming";
 shared.LoaderKeyFrames = {
     [1] = {
@@ -313,59 +310,59 @@ v5:Destroy();
 -- end);
 local v14 = loadstring(game:HttpGet("https://raw.githubusercontent.com/obfalchx/testfluent/refs/heads/main/FluentTrau"))();
 local v15 = v14:CreateWindow({
-    Title = "Min Gaming",
-    SubTitle = "",
+    Title = "Dino Hub",
+    SubTitle = "| .gg/67tG8nmaQX",
     TabWidth = 160,
-    Theme = "Light",
+    Theme = "Dark",
     Acrylic = false,
-    Size = UDim2.fromOffset(500, 320),
+    Size = UDim2.fromOffset(800, 600),
     MinimizeKey = Enum.KeyCode.End
 });
 local v16 = {
     Home = v15:AddTab({
-        Title = "Thông Tin"
+        Title = "Information"
     }),
     Main = v15:AddTab({
-        Title = "Cày"
+        Title = "Main Farm"
     }),
     Sea = v15:AddTab({
-        Title = "Sự Kiện"
+        Title = "Sea events"
     }),
     ITM = v15:AddTab({
-        Title = "Vật Phẩm"
+        Title = "Items"
     }),
     Setting = v15:AddTab({
-        Title = "Cài Đặt"
+        Title = "Setiing"
     }),
     Status = v15:AddTab({
-        Title = "Máy Chủ"
+        Title = "Server"
     }),
     Stats = v15:AddTab({
-        Title = "Chỉ Số"
+        Title = "Stats"
     }),
     Player = v15:AddTab({
-        Title = "Người Chơi"
+        Title = "Player"
     }),
     Teleport = v15:AddTab({
-        Title = "Dịch Chuyển"
+        Title = "Teleport"
     }),
     Visual = v15:AddTab({
-        Title = "Giả"
+        Title = "Troll"
     }),
     Fruit = v15:AddTab({
-        Title = "Trái"
+        Title = "Fruit"
     }),
     Raid = v15:AddTab({
-        Title = "Tập Kích"
+        Title = "Raid"
     }),
     Race = v15:AddTab({
-        Title = "Tộc"
+        Title = "Race"
     }),
     Shop = v15:AddTab({
-        Title = "Cửa Hàng"
+        Title = "Shop"
     }),
     Misc = v15:AddTab({
-        Title = "Khác"
+        Title = "Others"
     })
 };
 local v17 = v14.Options;
@@ -3874,7 +3871,7 @@ if Sea3 then
             _G.AutoFindPrehistoric = false;
             if not v513 then
                 v14:Notify({
-                    Title = "Min Gaming",
+                    Title = "Dino Hub",
                     Content = "Đảo Dung Nham Tìm Thấy",
                     Duration = 10
                 });
@@ -3968,7 +3965,7 @@ if Sea3 then
             _G.AutoFindMirage = false;
             if not v513 then
                 v14:Notify({
-                    Title = "Min Gaming",
+                    Title = "Dino Hub",
                     Content = "Đảo Bí Ẩn Tìm Thấy",
                     Duration = 10
                 });
@@ -4062,7 +4059,7 @@ if Sea3 then
             _G.AutoFindFrozen = false;
             if not v513 then
                 v14:Notify({
-                    Title = "Min Gaming",
+                    Title = "Dino Hub",
                     Content = "Đảo Leviathan Tìm Thấy",
                     Duration = 10
                 });
@@ -9323,8 +9320,3 @@ spawn(function()
         end
     end
 end);
-v14:Notify({
-    Title = "Min Gaming",
-    Content = "Tải Xong",
-    Duration = 10
-});
