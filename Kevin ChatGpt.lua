@@ -9,7 +9,7 @@ if player then
     CommF_:InvokeServer("SetTeam", "Marines")
 end
 
-shared.LoaderTitle = "Dino Hub On Top";
+shared.LoaderTitle = "Loading Script....!";
 shared.LoaderKeyFrames = {
     [1] = {
         1,
