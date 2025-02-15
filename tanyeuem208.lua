@@ -1,3 +1,13 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local CommF_ = Remotes:WaitForChild("CommF_")
+
+local player = Players.LocalPlayer
+if player then
+    CommF_:InvokeServer("SetTeam", "Marines")
+end
 
 shared.LoaderTitle = "Dino Hub On Top";
 shared.LoaderKeyFrames = {
