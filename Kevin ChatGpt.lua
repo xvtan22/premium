@@ -2623,7 +2623,7 @@ spawn(function()
     end
 end);
 local v55 = v16.Main:AddToggle("ToggleCollectChest", {
-    Title = "Lụm Rương",
+    Title = "Auto Collect chest",
     Description = "",
     Default = false
 });
@@ -2655,7 +2655,7 @@ spawn(function()
         end
     end
 end);
-local v56 = v16.Main:AddSection("Thông Thạo");
+local v56 = v16.Main:AddSection("Mastery");
 local v57 = v16.Main:AddDropdown("DropdownMastery", {
     Title = "Auto Farm Mastery",
     Description = "",
@@ -2779,7 +2779,7 @@ spawn(function()
     end
 end);
 if Sea3 then
-    local v484 = v16.Main:AddSection("Xương");
+    local v484 = v16.Main:AddSection("Bones");
     local v485 = v16.Main:AddParagraph({
         Title = "Bones status",
         Content = ""
@@ -2936,7 +2936,7 @@ if Sea3 then
     end);
 end
 if Sea3 then
-    local v490 = v16.Main:AddSection("Tư Lệnh Bánh");
+    local v490 = v16.Main:AddSection("Prince Cake");
     local v491 = v16.Main:AddParagraph({
         Title = "Monster Counter",
         Content = ""
@@ -3145,7 +3145,7 @@ if Sea2 then
         end
     end);
 end
-local v60 = v16.Main:AddSection("Trùm");
+local v60 = v16.Main:AddSection("Boss");
 if Sea1 then
     tableBoss = {
         "The Gorilla King",
@@ -3238,7 +3238,7 @@ spawn(function()
         end
     end
 end);
-local v63 = v16.Main:AddSection("Nguyên Liệu");
+local v63 = v16.Main:AddSection("Material");
 if Sea1 then
     MaterialList = {
         "Scrap Metal",
@@ -3338,7 +3338,7 @@ spawn(function()
     end
 end);
 if Sea3 then
-    local v498 = v16.Sea:AddSection("Đảo Cáo");
+    local v498 = v16.Sea:AddSection("Kitsune Island");
     local v499 = v16.Sea:AddParagraph({
         Title = "Kitsune Island Status",
         Content = ""
@@ -3843,7 +3843,7 @@ if Sea3 then
         end
     end);
     v16.Sea:AddButton({
-        Title = "TP leviathan spawn place",
+        Title = "Tween to buy boat",
         Description = "",
         Callback = function()
             Tween2(CFrame.new(- 16917.154296875, 7.757596015930176, 511.8203125));
@@ -6456,7 +6456,7 @@ spawn(function()
         end
     end
 end);
-local v56 = v16.Player:AddSection("Khác");
+local v56 = v16.Player:AddSection("Others");
 local v115 = v16.Player:AddToggle("ToggleNoClip", {
     Title = "NoClip",
     Description = "",
@@ -6519,7 +6519,7 @@ spawn(function()
         end
     end);
 end);
-local v118 = v16.Teleport:AddSection("Thế Giới");
+local v118 = v16.Teleport:AddSection("World");
 local v119 = v16.Teleport:AddToggle("ToggleAutoSea2", {
     Title = "Auto Sea2",
     Description = "",
@@ -6655,7 +6655,7 @@ v16.Teleport:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou");
     end
 });
-local v56 = v16.Teleport:AddSection("Đảo");
+local v56 = v16.Teleport:AddSection("Island");
 if Sea1 then
     IslandList = {
         "WindMill",
@@ -7176,7 +7176,7 @@ spawn(function()
         end
     end
 end);
-local v56 = v16.Fruit:AddSection("Định Vị");
+local v56 = v16.Fruit:AddSection("Esp");
 local v130 = v16.Fruit:AddToggle("ToggleEspPlayer", {
     Title = "Players",
     Description = "",
@@ -7671,7 +7671,7 @@ elseif Sea3 then
         end
     });
 end
-local v56 = v16.Raid:AddSection("Tập Kích Law");
+local v56 = v16.Raid:AddSection("Law raid");
 local v143 = v16.Raid:AddToggle("ToggleLaw", {
     Title = "Buy chip Law+Attack",
     Description = "",
@@ -7749,7 +7749,7 @@ v16.Race:AddButton({
         Tween2(CFrame.new(28981.552734375, 14888.4267578125, - 120.245849609375));
     end
 });
-local v56 = v16.Race:AddSection("Tộc");
+local v56 = v16.Race:AddSection("Race");
 v16.Race:AddButton({
     Title = "Race doors",
     Description = "",
@@ -7937,7 +7937,7 @@ spawn(function()
         end);
     end
 end);
-local v56 = v16.Race:AddSection("Huấn Luyện");
+local v56 = v16.Race:AddSection("Train");
 local v147 = v16.Race:AddToggle("ToggleFarmRace", {
     Title = "Train race",
     Description = "",
@@ -7981,7 +7981,7 @@ v149:OnChanged(function(v365)
     end
 end);
 v17.ToggleUpgrade:SetValue(false);
-local v56 = v16.Shop:AddSection("Khả Năng");
+local v56 = v16.Shop:AddSection("Ability");
 v16.Shop:AddButton({
     Title = "Jump",
     Description = "",
@@ -8010,7 +8010,7 @@ v16.Shop:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("KenTalk", "Buy");
     end
 });
-local v56 = v16.Shop:AddSection("Kiếm");
+local v56 = v16.Shop:AddSection("Sword");
 v16.Shop:AddButton({
     Title = "Cutlass",
     Description = "",
@@ -8081,7 +8081,7 @@ v16.Shop:AddButton({
         game.ReplicatedStorage.Remotes.CommF_:InvokeServer("ThunderGodTalk");
     end
 });
-local v56 = v16.Shop:AddSection("Võ");
+local v56 = v16.Shop:AddSection("Melee");
 v16.Shop:AddButton({
     Title = "Black Leg",
     Description = "",
@@ -8161,7 +8161,7 @@ v16.Shop:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySanguineArt");
     end
 });
-local v56 = v16.Shop:AddSection("Khác");
+local v56 = v16.Shop:AddSection("Other");
 v16.Shop:AddButton({
     Title = "Reset stats",
     Description = "",
@@ -8295,7 +8295,7 @@ function Hop()
     end
     v118();
 end
-local v56 = v16.Misc:AddSection("Đội");
+local v56 = v16.Misc:AddSection("Team");
 v16.Misc:AddButton({
     Title = "Pirates",
     Description = "",
@@ -8310,7 +8310,7 @@ v16.Misc:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetTeam", "Marines");
     end
 });
-local v56 = v16.Misc:AddSection("Kinh Nghiệm");
+local v56 = v16.Misc:AddSection("Exp");
 local v150 = {
     "KITT_RESET",
     "Sub2UncleKizaru",
@@ -8357,7 +8357,7 @@ local v150 = {
     "SECRET_ADMIN"
 };
 v16.Misc:AddButton({
-    Title = "Redeem All",
+    Title = "Redeem All code",
     Description = "",
     Callback = function()
         for v559, v560 in ipairs(v150) do
@@ -8368,7 +8368,7 @@ v16.Misc:AddButton({
 function RedeemCode(v377)
     game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(v377);
 end
-local v56 = v16.Misc:AddSection("Danh Hiệu");
+local v56 = v16.Misc:AddSection("Titles");
 v16.Misc:AddButton({
     Title = "Titles",
     Description = "",
@@ -8380,15 +8380,15 @@ v16.Misc:AddButton({
         game.Players.localPlayer.PlayerGui.Main.Titles.Visible = true;
     end
 });
-local v56 = v16.Misc:AddSection("Thức Tỉnh");
+local v56 = v16.Misc:AddSection("Awake");
 v16.Misc:AddButton({
-    Title = "awake",
+    Title = "Awakening",
     Description = "",
     Callback = function()
         game:GetService("Players").LocalPlayer.PlayerGui.Main.AwakeningToggler.Visible = true;
     end
 });
-local v56 = v16.Misc:AddSection("Khác");
+local v56 = v16.Misc:AddSection("Other");
 local v151 = v16.Misc:AddToggle("ToggleRejoin", {
     Title = "rejoin server",
     Description = "",
@@ -8409,7 +8409,7 @@ spawn(function()
         end
     end
 end);
-local v56 = v16.Misc:AddSection("Sương");
+local v56 = v16.Misc:AddSection("Frog");
 local function v152()
     local v382 = game:GetService("Lighting");
     if v382:FindFirstChild("BaseAtmosphere") then
@@ -8756,7 +8756,7 @@ spawn(function()
         end
     end
 end);
-local v168 = v16.Sea:AddSection("Đảo Dung Nham");
+local v168 = v16.Sea:AddSection("Prehistoric island");
 local v169 = v16.Sea:AddParagraph({
     Title = "Prehistoric island status",
     Content = ""
