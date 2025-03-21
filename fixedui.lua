@@ -61,7 +61,7 @@ if IKAI then
 	local Mouse = LocalPlayer:GetMouse()
 	local tween = game:GetService("TweenService")
 	local Red = {RainbowColorValue = 0, HueSelectionPosition = 0}
-	local LogoButton = [[7040391851]]
+	local LogoButton = [[99430417788026]]
 	
 	
 	local function Tween(instance, properties,style,wa)
