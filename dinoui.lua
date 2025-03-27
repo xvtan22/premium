@@ -1,69 +1,106 @@
 local DinoHub = {}
 
-local themes = {
-    ["fluent"] = {
-        Background = Color3.fromRGB(255, 255, 255),
-        Text = Color3.fromRGB(50, 50, 50),
-        Button = Color3.fromRGB(200, 200, 200),
-        ToggleOn = Color3.fromRGB(0, 200, 0),
-        ToggleOff = Color3.fromRGB(150, 150, 150),
-        Dropdown = Color3.fromRGB(220, 220, 220)
-    }
-}
-
 function DinoHub.CreateWindow(title, width, height)
-    local player = game:GetService("Players").LocalPlayer
-    local playerGui = player:WaitForChild("PlayerGui", 5)
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
 
-    if not playerGui then
-        warn("Không tìm thấy PlayerGui")
-        return nil
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.ResetOnSpawn = false -- Giữ GUI khi nhân vật chết hoặc reset
+    screenGui.Parent = playerGui
+
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, width or 400, 0, height or 250)
+    mainFrame.Position = UDim2.new(0.5, -width/2, 0.5, -height/2)
+    mainFrame.BackgroundTransparency = 0.3
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    mainFrame.Parent = screenGui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 15)
+    corner.Parent = mainFrame
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Thickness = 2
+    stroke.Transparency = 0.4
+    stroke.Color = Color3.fromRGB(200, 200, 200)
+    stroke.Parent = mainFrame
+
+    local blurEffect = Instance.new("ImageLabel")
+    blurEffect.Size = UDim2.new(1, 0, 1, 0)
+    blurEffect.BackgroundTransparency = 1
+    blurEffect.Image = "rbxassetid://7130524429" -- Kính mờ
+    blurEffect.ImageTransparency = 0.2
+    blurEffect.ScaleType = Enum.ScaleType.Stretch
+    blurEffect.Parent = mainFrame
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Text = title
+    titleLabel.Size = UDim2.new(1, 0, 0, 30)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextSize = 20
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Parent = mainFrame
+
+    -- Kéo thả mượt mà
+    local UserInputService = game:GetService("UserInputService")
+    local dragging, dragStart, startPos
+
+    local function smoothDrag()
+        local connection
+        connection = game:GetService("RunService").RenderStepped:Connect(function()
+            if dragging then
+                local delta = UserInputService:GetMouseLocation() - dragStart
+                local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+                mainFrame:TweenPosition(newPos, Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.2, true)
+            else
+                connection:Disconnect()
+            end
+        end)
     end
 
-    local ThemeColors = themes["fluent"]
+    titleLabel.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = UserInputService:GetMouseLocation()
+            startPos = mainFrame.Position
+            smoothDrag()
+        end
+    end)
 
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Parent = playerGui
+    titleLabel.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
 
-    -- Hiệu ứng kính mờ
-    local BlurEffect = Instance.new("BlurEffect")
-    BlurEffect.Size = 10
-    BlurEffect.Parent = game.Lighting
+    return { Frame = mainFrame }
+end
 
-    -- Nếu không truyền width, height thì dùng mặc định
-    width = width or 350
-    height = height or 300
+function DinoHub.AddButton(window, text, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 120, 0, 40)
+    button.Position = UDim2.new(0.5, -60, 0.7, 0)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 18
+    button.Font = Enum.Font.GothamBold
+    button.Parent = window.Frame
 
-    local Window = Instance.new("Frame")
-    Window.Size = UDim2.new(0, width, 0, height)
-    Window.Position = UDim2.new(0.5, -width/2, 0.5, -height/2)
-    Window.BackgroundColor3 = ThemeColors.Background
-    Window.BackgroundTransparency = 0.3 -- Làm mờ nhẹ
-    Window.BorderSizePixel = 0
-    Window.Parent = ScreenGui
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 10)
+    buttonCorner.Parent = button
 
-    -- Viền Fluent
-    local Stroke = Instance.new("UIStroke")
-    Stroke.Thickness = 2
-    Stroke.Color = Color3.fromRGB(180, 180, 180)
-    Stroke.Parent = Window
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    end)
 
-    local Title = Instance.new("TextLabel")
-    Title.Text = title
-    Title.Size = UDim2.new(1, 0, 0, 30)
-    Title.BackgroundTransparency = 1
-    Title.TextColor3 = ThemeColors.Text
-    Title.Font = Enum.Font.GothamSemibold
-    Title.TextSize = 18
-    Title.Parent = Window
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    end)
 
-    local TabHolder = Instance.new("Frame")
-    TabHolder.Size = UDim2.new(1, 0, 0, 40)
-    TabHolder.Position = UDim2.new(0, 0, 0, 30)
-    TabHolder.BackgroundTransparency = 1
-    TabHolder.Parent = Window
-
-    return setmetatable({Window = Window, Tabs = {}, Theme = ThemeColors, TabHolder = TabHolder}, {__index = DinoHub})
+    button.MouseButton1Click:Connect(callback)
 end
 
 return DinoHub
