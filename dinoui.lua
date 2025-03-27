@@ -80,47 +80,71 @@ function DinoGUI.Create(config)
         return button
     end
 
-    -- Hỗ trợ thu nhỏ bằng phím tắt
-    if config.MinimizeKey then
-        local UserInputService = game:GetService("UserInputService")
-        UserInputService.InputBegan:Connect(function(input, processed)
-            if not processed and input.KeyCode == config.MinimizeKey then
-                window.ToggleVisibility()
-            end
-        end)
+    -- Thêm Tab
+    function window.AddTab(tabName)
+        local tabFrame = Instance.new("Frame")
+        tabFrame.Size = UDim2.new(1, 0, 1, -30)
+        tabFrame.Position = UDim2.new(0, 0, 0, 30)
+        tabFrame.BackgroundTransparency = 1
+        tabFrame.Visible = false
+        tabFrame.Parent = mainFrame
+
+        return tabFrame
     end
 
-    -- Kéo thả mượt mà
-    local UserInputService = game:GetService("UserInputService")
-    local dragging, dragStart, startPos
+    -- Thêm Button
+    function window.AddButton(tab, text, callback)
+        local button = Instance.new("TextButton")
+        button.Text = text
+        button.Size = UDim2.new(0, 150, 0, 50)
+        button.Position = UDim2.new(0.5, -75, 0.1, 0)
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Parent = tab
 
-    local function smoothDrag()
-        local connection
-        connection = game:GetService("RunService").RenderStepped:Connect(function()
-            if dragging then
-                local delta = UserInputService:GetMouseLocation() - dragStart
-                local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-                mainFrame.Position = newPos
-            else
-                connection:Disconnect()
-            end
+        button.MouseButton1Click:Connect(function()
+            if callback then callback() end
         end)
+
+        return button
     end
 
-    title.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = UserInputService:GetMouseLocation()
-            startPos = mainFrame.Position
-            smoothDrag()
-        end
-    end)
+    -- Thêm Dropdown
+    function window.AddDropdown(tab, options, callback)
+        local dropdown = Instance.new("TextButton")
+        dropdown.Text = "Select Option"
+        dropdown.Size = UDim2.new(0, 150, 0, 50)
+        dropdown.Position = UDim2.new(0.5, -75, 0.3, 0)
+        dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+        dropdown.Parent = tab
 
-    title.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
+        local dropList = Instance.new("Frame")
+        dropList.Size = UDim2.new(0, 150, 0, #options * 30)
+        dropList.Position = UDim2.new(0, 0, 1, 0)
+        dropList.BackgroundTransparency = 0.5
+        dropList.Visible = false
+        dropList.Parent = dropdown
+
+        for _, option in ipairs(options) do
+            local optionButton = Instance.new("TextButton")
+            optionButton.Text = option
+            optionButton.Size = UDim2.new(1, 0, 0, 30)
+            optionButton.Parent = dropList
+
+            optionButton.MouseButton1Click:Connect(function()
+                dropdown.Text = option
+                dropList.Visible = false
+                if callback then callback(option) end
+            end)
         end
-    end)
+
+        dropdown.MouseButton1Click:Connect(function()
+            dropList.Visible = not dropList.Visible
+        end)
+
+        return dropdown
+    end
 
     return window
 end
