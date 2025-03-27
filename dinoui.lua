@@ -57,44 +57,36 @@ function DinoGUI.Create(config)
         subTitle.Parent = mainFrame
     end
 
-    -- Thêm chức năng kéo thả trơn trượt
-    local dragging, dragInput, dragStart, startPos, velocity
+    -- Thêm chức năng kéo thả mượt mà với Tween
     local userInputService = game:GetService("UserInputService")
-    local runService = game:GetService("RunService")
+    local tweenService = game:GetService("TweenService")
+    local dragging, dragStart, startPos
 
     title.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
             startPos = mainFrame.Position
-            velocity = Vector2.new(0, 0)
         end
     end)
 
     title.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
+            userInputService.InputChanged:Connect(function(moveInput)
+                if dragging and moveInput.UserInputType == Enum.UserInputType.MouseMovement then
+                    local delta = moveInput.Position - dragStart
+                    local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+                    
+                    local tween = tweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = newPos})
+                    tween:Play()
+                end
+            end)
         end
     end)
 
     title.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
-        end
-    end)
-
-    userInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            velocity = Vector2.new(delta.X, delta.Y)
-            mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
-
-    runService.RenderStepped:Connect(function()
-        if not dragging and velocity.Magnitude > 0.1 then
-            velocity = velocity * 0.9 -- Giảm tốc độ để tạo hiệu ứng trượt
-            mainFrame.Position = mainFrame.Position + UDim2.new(0, velocity.X, 0, velocity.Y)
         end
     end)
 
