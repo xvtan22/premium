@@ -1,6 +1,6 @@
-local FluentGUI = {}
+local DinoGUI = {}
 
-function FluentGUI.Create(config)
+function DinoGUI.Create(config)
     local window = {}
     
     -- Tạo ScreenGui
@@ -35,7 +35,7 @@ function FluentGUI.Create(config)
 
     -- Tạo tiêu đề
     local title = Instance.new("TextLabel")
-    title.Text = config.Title or "Fluent GUI"
+    title.Text = config.Title or "Dino GUI"
     title.Size = UDim2.new(1, 0, 0, 30)
     title.BackgroundTransparency = 1
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -102,4 +102,4 @@ function FluentGUI.Create(config)
     return window
 end
 
-return FluentGUI
+return DinoGUI
