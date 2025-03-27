@@ -57,14 +57,17 @@ function DinoGUI.Create(config)
         subTitle.Parent = mainFrame
     end
 
-    -- Thêm chức năng kéo thả
-    local dragging, dragInput, dragStart, startPos
+    -- Thêm chức năng kéo thả trơn trượt
+    local dragging, dragInput, dragStart, startPos, velocity
+    local userInputService = game:GetService("UserInputService")
+    local runService = game:GetService("RunService")
 
     title.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
             startPos = mainFrame.Position
+            velocity = Vector2.new(0, 0)
         end
     end)
 
@@ -80,10 +83,18 @@ function DinoGUI.Create(config)
         end
     end)
 
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
+    userInputService.InputChanged:Connect(function(input)
         if input == dragInput and dragging then
             local delta = input.Position - dragStart
+            velocity = Vector2.new(delta.X, delta.Y)
             mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    runService.RenderStepped:Connect(function()
+        if not dragging and velocity.Magnitude > 0.1 then
+            velocity = velocity * 0.9 -- Giảm tốc độ để tạo hiệu ứng trượt
+            mainFrame.Position = mainFrame.Position + UDim2.new(0, velocity.X, 0, velocity.Y)
         end
     end)
 
@@ -103,76 +114,6 @@ function DinoGUI.Create(config)
     toggleButton.MouseButton1Click:Connect(function()
         window.ToggleVisibility()
     end)
-
-    -- Thêm Tab
-    function window.AddTab(tabName)
-        local tabFrame = Instance.new("Frame")
-        tabFrame.Size = UDim2.new(1, 0, 1, -30)
-        tabFrame.Position = UDim2.new(0, 0, 0, 30)
-        tabFrame.BackgroundTransparency = 1
-        tabFrame.Visible = false
-        tabFrame.Parent = mainFrame
-        return tabFrame
-    end
-
-    -- Thêm nút bấm
-    function window.AddButton(parent, buttonText, callback)
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(0, 150, 0, 40)
-        button.Text = buttonText
-        button.Parent = parent
-        button.MouseButton1Click:Connect(callback)
-        return button
-    end
-
-    -- Thêm Toggle
-    function window.AddToggle(parent, toggleText, defaultState, callback)
-        local toggle = Instance.new("TextButton")
-        toggle.Size = UDim2.new(0, 150, 0, 40)
-        toggle.Text = toggleText .. (defaultState and " [ON]" or " [OFF]")
-        toggle.Parent = parent
-        local state = defaultState
-        toggle.MouseButton1Click:Connect(function()
-            state = not state
-            toggle.Text = toggleText .. (state and " [ON]" or " [OFF]")
-            callback(state)
-        end)
-        return toggle
-    end
-
-    -- Thêm Dropdown
-    function window.AddDropdown(parent, options, callback)
-        local dropdown = Instance.new("Frame")
-        dropdown.Size = UDim2.new(0, 150, 0, 40)
-        dropdown.Parent = parent
-
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(1, 0, 1, 0)
-        button.Text = "Chọn Tùy Chọn"
-        button.Parent = dropdown
-
-        local optionList = Instance.new("Frame")
-        optionList.Size = UDim2.new(1, 0, 0, #options * 30)
-        optionList.Position = UDim2.new(0, 0, 1, 0)
-        optionList.Visible = false
-        optionList.Parent = dropdown
-
-        for _, option in pairs(options) do
-            local optionButton = Instance.new("TextButton")
-            optionButton.Size = UDim2.new(1, 0, 0, 30)
-            optionButton.Text = option
-            optionButton.Parent = optionList
-            optionButton.MouseButton1Click:Connect(function()
-                button.Text = option
-                optionList.Visible = false
-                callback(option)
-            end)
-        end
-
-        button.MouseButton1Click:Connect(function()
-            optionList.Visible = not optionList.Visible
-        end)
-    end
 
     return window
 end
