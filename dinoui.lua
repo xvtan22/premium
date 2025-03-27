@@ -62,23 +62,17 @@ function DinoGUI.Create(config)
         mainFrame.Visible = not mainFrame.Visible
     end
 
-    -- Thêm ImageButton
-    function window.AddImageButton(imageId, position, size, callback)
-        local button = Instance.new("ImageButton")
-        button.Size = size or UDim2.new(0, 50, 0, 50)
-        button.Position = position or UDim2.new(0, 10, 0, 50)
-        button.Image = imageId or "rbxassetid://0"
-        button.BackgroundTransparency = 1
-        button.Parent = mainFrame
+    -- Nút bật/tắt GUI mặc định (bên ngoài cửa sổ GUI)
+    local toggleButton = Instance.new("ImageButton")
+    toggleButton.Size = UDim2.new(0, 40, 0, 40)
+    toggleButton.Position = UDim2.new(0, 10, 0, 10)
+    toggleButton.Image = "rbxassetid://654321" -- Thay bằng ID hình ảnh của bạn
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Parent = screenGui
 
-        button.MouseButton1Click:Connect(function()
-            if callback then
-                callback()
-            end
-        end)
-
-        return button
-    end
+    toggleButton.MouseButton1Click:Connect(function()
+        window.ToggleVisibility()
+    end)
 
     -- Thêm Tab
     function window.AddTab(tabName)
@@ -88,101 +82,66 @@ function DinoGUI.Create(config)
         tabFrame.BackgroundTransparency = 1
         tabFrame.Visible = false
         tabFrame.Parent = mainFrame
-
         return tabFrame
     end
 
-    -- Thêm Button
-    function window.AddButton(tab, text, callback)
+    -- Thêm nút bấm
+    function window.AddButton(parent, buttonText, callback)
         local button = Instance.new("TextButton")
-        button.Text = text
-        button.Size = UDim2.new(0, 150, 0, 50)
-        button.Position = UDim2.new(0.5, -75, 0.1, 0)
-        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        button.Parent = tab
-
-        button.MouseButton1Click:Connect(function()
-            if callback then callback() end
-        end)
-
+        button.Size = UDim2.new(0, 150, 0, 40)
+        button.Text = buttonText
+        button.Parent = parent
+        button.MouseButton1Click:Connect(callback)
         return button
     end
 
     -- Thêm Toggle
-    function window.AddToggle(tab, text, default, callback)
+    function window.AddToggle(parent, toggleText, defaultState, callback)
         local toggle = Instance.new("TextButton")
-        toggle.Text = text
-        toggle.Size = UDim2.new(0, 150, 0, 50)
-        toggle.Position = UDim2.new(0.5, -75, 0.2, 0)
-        toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-        toggle.Parent = tab
-
-        local isEnabled = default or false
-
-        -- Bo góc
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 8)
-        corner.Parent = toggle
-
-        -- Cập nhật trạng thái Toggle
-        local function updateToggle()
-            if isEnabled then
-                toggle.BackgroundColor3 = Color3.fromRGB(0, 200, 0) -- Xanh khi bật
-            else
-                toggle.BackgroundColor3 = Color3.fromRGB(200, 0, 0) -- Đỏ khi tắt
-            end
-        end
-
-        -- Sự kiện nhấn
+        toggle.Size = UDim2.new(0, 150, 0, 40)
+        toggle.Text = toggleText .. (defaultState and " [ON]" or " [OFF]")
+        toggle.Parent = parent
+        local state = defaultState
         toggle.MouseButton1Click:Connect(function()
-            isEnabled = not isEnabled
-            updateToggle()
-            if callback then callback(isEnabled) end
+            state = not state
+            toggle.Text = toggleText .. (state and " [ON]" or " [OFF]")
+            callback(state)
         end)
-
-        -- Khởi tạo trạng thái ban đầu
-        updateToggle()
-
         return toggle
     end
 
     -- Thêm Dropdown
-    function window.AddDropdown(tab, options, callback)
-        local dropdown = Instance.new("TextButton")
-        dropdown.Text = "Select Option"
-        dropdown.Size = UDim2.new(0, 150, 0, 50)
-        dropdown.Position = UDim2.new(0.5, -75, 0.3, 0)
-        dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-        dropdown.Parent = tab
+    function window.AddDropdown(parent, options, callback)
+        local dropdown = Instance.new("Frame")
+        dropdown.Size = UDim2.new(0, 150, 0, 40)
+        dropdown.Parent = parent
 
-        local dropList = Instance.new("Frame")
-        dropList.Size = UDim2.new(0, 150, 0, #options * 30)
-        dropList.Position = UDim2.new(0, 0, 1, 0)
-        dropList.BackgroundTransparency = 0.5
-        dropList.Visible = false
-        dropList.Parent = dropdown
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, 0, 1, 0)
+        button.Text = "Chọn Tùy Chọn"
+        button.Parent = dropdown
 
-        for _, option in ipairs(options) do
+        local optionList = Instance.new("Frame")
+        optionList.Size = UDim2.new(1, 0, 0, #options * 30)
+        optionList.Position = UDim2.new(0, 0, 1, 0)
+        optionList.Visible = false
+        optionList.Parent = dropdown
+
+        for _, option in pairs(options) do
             local optionButton = Instance.new("TextButton")
-            optionButton.Text = option
             optionButton.Size = UDim2.new(1, 0, 0, 30)
-            optionButton.Parent = dropList
-
+            optionButton.Text = option
+            optionButton.Parent = optionList
             optionButton.MouseButton1Click:Connect(function()
-                dropdown.Text = option
-                dropList.Visible = false
-                if callback then callback(option) end
+                button.Text = option
+                optionList.Visible = false
+                callback(option)
             end)
         end
 
-        dropdown.MouseButton1Click:Connect(function()
-            dropList.Visible = not dropList.Visible
+        button.MouseButton1Click:Connect(function()
+            optionList.Visible = not optionList.Visible
         end)
-
-        return dropdown
     end
 
     return window
