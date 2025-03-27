@@ -109,6 +109,45 @@ function DinoGUI.Create(config)
         return button
     end
 
+    -- Thêm Toggle
+    function window.AddToggle(tab, text, default, callback)
+        local toggle = Instance.new("TextButton")
+        toggle.Text = text
+        toggle.Size = UDim2.new(0, 150, 0, 50)
+        toggle.Position = UDim2.new(0.5, -75, 0.2, 0)
+        toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggle.Parent = tab
+
+        local isEnabled = default or false
+
+        -- Bo góc
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 8)
+        corner.Parent = toggle
+
+        -- Cập nhật trạng thái Toggle
+        local function updateToggle()
+            if isEnabled then
+                toggle.BackgroundColor3 = Color3.fromRGB(0, 200, 0) -- Xanh khi bật
+            else
+                toggle.BackgroundColor3 = Color3.fromRGB(200, 0, 0) -- Đỏ khi tắt
+            end
+        end
+
+        -- Sự kiện nhấn
+        toggle.MouseButton1Click:Connect(function()
+            isEnabled = not isEnabled
+            updateToggle()
+            if callback then callback(isEnabled) end
+        end)
+
+        -- Khởi tạo trạng thái ban đầu
+        updateToggle()
+
+        return toggle
+    end
+
     -- Thêm Dropdown
     function window.AddDropdown(tab, options, callback)
         local dropdown = Instance.new("TextButton")
