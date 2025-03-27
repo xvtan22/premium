@@ -2,33 +2,25 @@ local DinoHub = {}
 
 local themes = {
     ["white"] = {
-        Background = Color3.fromRGB(240, 240, 240),
+        Background = Color3.fromRGB(255, 255, 255),
         Text = Color3.fromRGB(50, 50, 50),
         Button = Color3.fromRGB(200, 200, 200),
         ToggleOn = Color3.fromRGB(0, 200, 0),
         ToggleOff = Color3.fromRGB(150, 150, 150),
         Dropdown = Color3.fromRGB(220, 220, 220)
-    },
-    ["dark"] = {
-        Background = Color3.fromRGB(30, 30, 30),
-        Text = Color3.fromRGB(225, 225, 225),
-        Button = Color3.fromRGB(50, 50, 50),
-        ToggleOn = Color3.fromRGB(0, 200, 0),
-        ToggleOff = Color3.fromRGB(100, 100, 100),
-        Dropdown = Color3.fromRGB(50, 50, 50)
     }
 }
 
-function DinoHub.CreateWindow(title, width, height, theme)
+function DinoHub.CreateWindow(title, width, height)
     local player = game:GetService("Players").LocalPlayer
-    local playerGui = player:WaitForChild("PlayerGui", 5) -- Đợi tối đa 5 giây
+    local playerGui = player:WaitForChild("PlayerGui", 5)
 
     if not playerGui then
         warn("Không tìm thấy PlayerGui")
         return nil
     end
 
-    local ThemeColors = themes[theme] or themes["white"]
+    local ThemeColors = themes["white"]
 
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = playerGui
@@ -37,7 +29,8 @@ function DinoHub.CreateWindow(title, width, height, theme)
     Window.Size = UDim2.new(0, width, 0, height)
     Window.Position = UDim2.new(0.5, -width/2, 0.5, -height/2)
     Window.BackgroundColor3 = ThemeColors.Background
-    Window.BackgroundTransparency = 0.3
+    Window.BackgroundTransparency = 0.5 -- Làm mờ đục (50% trong suốt)
+    Window.BorderSizePixel = 0
     Window.Parent = ScreenGui
 
     local Title = Instance.new("TextLabel")
