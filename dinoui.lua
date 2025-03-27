@@ -5,7 +5,7 @@ function DinoGUI.Create(config)
     
     -- Tạo ScreenGui
     local screenGui = Instance.new("ScreenGui")
-    screenGui.ResetOnSpawn = true -- Giữ GUI khi nhân vật chết hoặc reset
+    screenGui.ResetOnSpawn = false -- Giữ GUI khi nhân vật chết hoặc reset
     screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
     -- Tạo Frame chính (Cửa sổ GUI)
@@ -57,12 +57,35 @@ function DinoGUI.Create(config)
         subTitle.Parent = mainFrame
     end
 
+    -- Thêm nút bật/tắt GUI
+    function window.ToggleVisibility()
+        mainFrame.Visible = not mainFrame.Visible
+    end
+
+    -- Thêm ImageButton
+    function window.AddImageButton(imageId, position, size, callback)
+        local button = Instance.new("ImageButton")
+        button.Size = size or UDim2.new(0, 50, 0, 50)
+        button.Position = position or UDim2.new(0, 10, 0, 50)
+        button.Image = imageId or "rbxassetid://0"
+        button.BackgroundTransparency = 1
+        button.Parent = mainFrame
+
+        button.MouseButton1Click:Connect(function()
+            if callback then
+                callback()
+            end
+        end)
+
+        return button
+    end
+
     -- Hỗ trợ thu nhỏ bằng phím tắt
     if config.MinimizeKey then
         local UserInputService = game:GetService("UserInputService")
         UserInputService.InputBegan:Connect(function(input, processed)
             if not processed and input.KeyCode == config.MinimizeKey then
-                mainFrame.Visible = not mainFrame.Visible
+                window.ToggleVisibility()
             end
         end)
     end
