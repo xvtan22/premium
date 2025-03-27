@@ -5,7 +5,7 @@ function DinoGUI.Create(config)
     
     -- Tạo ScreenGui
     local screenGui = Instance.new("ScreenGui")
-    screenGui.ResetOnSpawn = false -- Giữ GUI khi nhân vật chết hoặc reset
+    screenGui.ResetOnSpawn = true -- Giữ GUI khi nhân vật chết hoặc reset
     screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
     -- Tạo Frame chính (Cửa sổ GUI)
